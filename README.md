@@ -1,6 +1,6 @@
 # Fake News Detection System
 
-**Machine Learning Project - PBL-1 (CSE2170)**  
+**Machine Learning Project - PBL-1**  
 **Manipal University Jaipur**  
 **Author:** Krrish Ajmera
 
@@ -295,22 +295,15 @@ pip install -r requirements.txt
 
 ---
 
-## 📞 Contact
+## 👨‍💻 About
 
-**Author:** Krrish Ajmera  
-**Project:** PBL-1 (CSE2170)  
-**Institution:** Manipal University Jaipur
+**Developer:** Krrish Ajmera  
+**Project:** Problem-Based Learning (PBL-1)  
+**Institution:** Manipal University Jaipur  
+**GitHub:** [MrAjmera](https://github.com/MrAjmera)
 
 ---
 
 ## 📄 License
 
-This project is for educational purposes as part of PBL-1 (CSE2170) coursework.
-
----
-
-**Last Updated:** February 15, 2026  
-**Version:** 1.0  
-**Status:** ✅ Ready for Presentation
-
-**Made with ❤️ for PBL-1 (CSE2170) - Manipal University Jaipur**
+This project is for educational purposes as part of PBL-1 coursework at Manipal University Jaipur.

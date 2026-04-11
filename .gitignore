@@ -140,8 +140,9 @@ docs/
 !requirements.txt
 
 # Large model files (too big for GitHub)
-models/model_rf.pkl
-models/model.pkl
+models/
+models_v2/
+*.pkl
 
 # Large datasets (can be re-downloaded)
 data/raw/

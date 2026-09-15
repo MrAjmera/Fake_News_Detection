@@ -149,3 +149,8 @@ data/raw/
 
 # Visualizations (can be regenerated)
 visualizations/
+
+# Web UI
+backend/venv/
+frontend/node_modules/
+frontend/dist/

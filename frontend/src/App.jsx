@@ -1,5 +1,6 @@
 import { NavLink, Route, Routes } from 'react-router-dom'
 import Analyze from './pages/Analyze'
+import Architecture from './pages/Architecture'
 import Model from './pages/Model'
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
             Analyze
           </NavLink>
           <NavLink to="/model">Model</NavLink>
+          <NavLink to="/architecture">Architecture</NavLink>
         </nav>
       </header>
 
@@ -21,6 +23,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Analyze />} />
           <Route path="/model" element={<Model />} />
+          <Route path="/architecture" element={<Architecture />} />
         </Routes>
       </main>
     </div>

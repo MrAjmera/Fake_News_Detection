@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { getModelInfo } from '../api/client'
 
 const REPORT_ROWS = [
@@ -149,14 +150,14 @@ export default function Model() {
               per-article signals shown on the Analyze screen.
             </figcaption>
           </figure>
-          <figure>
-            <img src="/static/viz/decision_tree_simple.png" alt="Decision tree" />
-            <figcaption>
-              A simplified decision tree, included to illustrate how the
-              tree-based models partition the feature space.
-            </figcaption>
-          </figure>
         </div>
+        <p className="notice" style={{ marginTop: '1rem' }}>
+          Looking for the decision-tree diagram? It's been replaced by the{' '}
+          <Link to="/architecture">Architecture</Link> page — three diagrams
+          (system design, request sequence, and the actual ML pipeline) built
+          from the real endpoints and parameters in this repo, rather than a
+          raw sklearn tree export.
+        </p>
       </section>
     </div>
   )

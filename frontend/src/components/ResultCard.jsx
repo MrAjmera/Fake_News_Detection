@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 export default function ResultCard({ result }) {
   const uncertain = result.confidence_band === 'UNCERTAIN'
   const tone = uncertain ? 'uncertain' : result.verdict.toLowerCase()
+  const glyph = uncertain ? '?' : tone === 'fake' ? '⚠' : '✓'
 
   const [fill, setFill] = useState(0)
   useEffect(() => {
@@ -15,6 +16,7 @@ export default function ResultCard({ result }) {
     <section className={`result ${tone}`}>
       <div className="verdict-row">
         <span className={`verdict ${tone}`}>
+          <span className="verdict-glyph" aria-hidden="true">{glyph}</span>
           {uncertain ? 'UNCERTAIN' : result.verdict}
         </span>
         <span className="band">{result.confidence_band} confidence</span>

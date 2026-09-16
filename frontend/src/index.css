@@ -1,30 +1,30 @@
 /* ============================================================
    Fake News Detection — UI stylesheet
-   Dark analysis-instrument theme. Colour carries meaning:
+   Cream & sky-blue light theme. Colour carries meaning:
    red/green/grey are reserved for verdicts only.
    ============================================================ */
 
 :root {
-  --bg: #0d0f12;
-  --surface: #15181d;
-  --surface-2: #1b1f26;
-  --border: #262b33;
-  --border-soft: #1f242b;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #eaf3fa;
+  --border: #d9e5ee;
+  --border-soft: #e7eff5;
 
-  --text: #e6e9ee;
-  --text-dim: #9aa3b2;
-  --text-faint: #6b7483;
+  --text: #26313d;
+  --text-dim: #5c6b78;
+  --text-faint: #93a1ac;
 
-  --accent: #5b8cff;
-  --accent-dim: #2f4a8a;
+  --accent: #3f8fcf;
+  --accent-dim: #9ecbe8;
 
-  --fake: #e8635c;
-  --fake-soft: rgba(232, 99, 92, 0.12);
-  --real: #3fbf8f;
-  --real-soft: rgba(63, 191, 143, 0.12);
-  --uncertain: #8b94a3;
-  --uncertain-soft: rgba(139, 148, 163, 0.1);
-  --amber: #f5b544;
+  --fake: #d1503f;
+  --fake-soft: rgba(209, 80, 63, 0.1);
+  --real: #2e9e6f;
+  --real-soft: rgba(46, 158, 111, 0.1);
+  --uncertain: #74808c;
+  --uncertain-soft: rgba(116, 128, 140, 0.1);
+  --amber: #d99a2b;
 
   --radius-lg: 14px;
   --radius: 10px;
@@ -723,8 +723,8 @@ button:disabled {
   padding: 0.875rem 1rem;
   border-radius: var(--radius);
   background: var(--fake-soft);
-  border: 1px solid rgba(255, 95, 86, 0.3);
-  color: #ffb3ae;
+  border: 1px solid rgba(209, 80, 63, 0.3);
+  color: #9c3a2c;
   font-size: 0.875rem;
 }
 

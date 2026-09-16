@@ -1,10 +1,20 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { getModelInfo } from '../api/client'
 
 const REPORT_ROWS = [
   ['True News', '0.96', '0.92', '0.94', '7,305'],
   ['Fake News', '0.93', '0.97', '0.95', '8,382'],
+  ['Overall accuracy', '—', '—', '0.95', '15,687'],
+]
+
+// Logistic Regression (V2) — the model actually served by the API.
+// Reproduced by re-running train_v2.py's exact ingestion/split (random_state=42)
+// against the saved models_v2/model_lr_v2.pkl + vectorizer_v2.pkl on 2026-09-15.
+// Support counts match the Random Forest table above 1:1, confirming this is
+// the same held-out test set, not a re-sampled one.
+const REPORT_ROWS_LR = [
+  ['True News', '0.96', '0.94', '0.95', '7,305'],
+  ['Fake News', '0.95', '0.96', '0.96', '8,382'],
   ['Overall accuracy', '—', '—', '0.95', '15,687'],
 ]
 
@@ -67,7 +77,38 @@ export default function Model() {
       </div>
 
       <section className="section">
-        <h2>Classification report</h2>
+        <h2>Classification report — Logistic Regression (served here)</h2>
+        <div className="card table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1-score</th>
+                <th>Support</th>
+              </tr>
+            </thead>
+            <tbody>
+              {REPORT_ROWS_LR.map((row) => (
+                <tr key={row[0]}>
+                  {row.map((cell, i) => (
+                    <td key={i}>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="section">
+        <h2>Classification report — Random Forest (reference)</h2>
+        <p className="diagram-caption">
+          Random Forest's test-set breakdown, kept here as the reference for
+          pipeline quality — it scored marginally higher but is not the
+          model served in this demo (see Configuration below for why).
+        </p>
         <div className="card table-wrap">
           <table>
             <thead>
@@ -98,7 +139,11 @@ export default function Model() {
           <div className="jump">
             <span className="jump-from">69.21%</span>
             <span className="jump-to">95.61%</span>
-            <span className="jump-label">after three pipeline fixes</span>
+            <span className="jump-label">
+              after three pipeline fixes (Random Forest, best individual
+              model — Logistic Regression, served here, reaches{' '}
+              {info ? info.accuracy.logistic_regression.toFixed(2) : '95.14'}%)
+            </span>
           </div>
           <div className="story">
             {FIXES.map(([title, body], i) => (
@@ -151,13 +196,6 @@ export default function Model() {
             </figcaption>
           </figure>
         </div>
-        <p className="notice" style={{ marginTop: '1rem' }}>
-          Looking for the decision-tree diagram? It's been replaced by the{' '}
-          <Link to="/architecture">Architecture</Link> page — three diagrams
-          (system design, request sequence, and the actual ML pipeline) built
-          from the real endpoints and parameters in this repo, rather than a
-          raw sklearn tree export.
-        </p>
       </section>
     </div>
   )

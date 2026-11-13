@@ -1323,3 +1323,179 @@ tbody tr:last-child td {
     font-size: 1.5rem;
   }
 }
+
+/* ---------- Shell: skip link, brand link, footer ---------- */
+
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+.brand {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.page:focus {
+  outline: none;
+}
+
+.footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+  align-items: center;
+}
+
+.footer a {
+  color: var(--text-dim);
+}
+
+.footer a:hover {
+  color: var(--text);
+}
+
+/* ---------- Buttons (secondary / link-styled) ---------- */
+
+.btn-link,
+.btn-secondary {
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-secondary {
+  padding: 0.625rem 1.375rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--accent-dim);
+}
+
+.btn-secondary:disabled {
+  color: var(--text-faint);
+  opacity: 0.7;
+}
+
+/* ---------- Landing ---------- */
+
+.hero {
+  padding: 1.5rem 0 3rem;
+  max-width: 46rem;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  margin-bottom: 0.875rem;
+}
+
+.hero h1 {
+  font-size: var(--fs-2xl);
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+}
+
+.hero-lede {
+  margin-top: 1rem;
+  font-size: var(--fs-md);
+  color: var(--text-dim);
+  max-width: 56ch;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.steps,
+.limits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.step .story-num {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.step-title {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--text);
+  margin-bottom: 0.375rem;
+}
+
+.step p,
+.limits p {
+  color: var(--text-dim);
+  font-size: 0.875rem;
+}
+
+.limits li {
+  padding: 1rem 1.125rem;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+}
+
+.limits b {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.cta-band {
+  margin-top: var(--space-lg);
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}

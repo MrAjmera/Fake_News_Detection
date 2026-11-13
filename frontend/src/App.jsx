@@ -2,6 +2,7 @@ import { NavLink, Route, Routes } from 'react-router-dom'
 import Analyze from './pages/Analyze'
 import Architecture from './pages/Architecture'
 import Model from './pages/Model'
+import ThemeToggle from './components/ThemeToggle'
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <NavLink to="/model">Model</NavLink>
           <NavLink to="/architecture">Architecture</NavLink>
         </nav>
+        <ThemeToggle />
       </header>
 
       <main className="page">

@@ -5,6 +5,9 @@
    ============================================================ */
 
 :root {
+  color-scheme: light;
+
+  /* --- colour (light) --- */
   --bg: #ffffff;
   --surface: #ffffff;
   --surface-2: #eaf3fa;
@@ -12,29 +15,48 @@
   --border-soft: #e7eff5;
 
   --text: #26313d;
-  --text-dim: #5c6b78;
-  --text-faint: #93a1ac;
+  --text-dim: #4a5764;
+  --text-faint: #5b6874; /* AA on --surface and --surface-2 */
 
-  --accent: #3f8fcf;
+  --accent: #2a74b5;
+  --accent-hover: #1f5f9a;
   --accent-dim: #9ecbe8;
+  --on-accent: #ffffff;
 
-  --fake: #d1503f;
-  --fake-soft: rgba(209, 80, 63, 0.1);
-  --real: #2e9e6f;
-  --real-soft: rgba(46, 158, 111, 0.1);
-  --uncertain: #74808c;
-  --uncertain-soft: rgba(116, 128, 140, 0.1);
+  --fake: #b8402f;
+  --fake-soft: rgba(184, 64, 47, 0.1);
+  --real: #1f7a53;
+  --real-soft: rgba(31, 122, 83, 0.1);
+  --uncertain: #5f6b77;
+  --uncertain-soft: rgba(95, 107, 119, 0.1);
   --amber: #d99a2b;
+  --amber-text: #8a5a08;
+  --error-text: #9c3a2c;
+  --error-border: rgba(184, 64, 47, 0.3);
+  --overlay: rgba(20, 30, 40, 0.55);
+  --shadow: 0 8px 28px rgba(30, 50, 70, 0.14);
 
+  /* --- shape --- */
   --radius-lg: 14px;
   --radius: 10px;
   --radius-sm: 6px;
   --radius-pill: 999px;
 
+  /* --- spacing scale --- */
   --space-xs: 0.375rem;
   --space-sm: 0.75rem;
   --space-md: 1.25rem;
   --space-lg: 2.25rem;
+  --space-xl: 4rem;
+
+  /* --- type scale --- */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.875rem;
+  --fs-2xl: clamp(2rem, 5vw, 3rem);
 
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
@@ -44,8 +66,76 @@
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
+/* Dark palette. Applied when the user picks dark, or when they have made no
+   choice and the OS prefers dark. JS sets data-theme explicitly; the media
+   query is the no-JS fallback. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f161c;
+  --surface: #16202a;
+  --surface-2: #1c2935;
+  --border: #2c3b48;
+  --border-soft: #233140;
+
+  --text: #e6edf3;
+  --text-dim: #b0bdc9;
+  --text-faint: #93a1ad;
+
+  --accent: #6bb3ea;
+  --accent-hover: #8cc5f0;
+  --accent-dim: #2f5f84;
+  --on-accent: #0b1520;
+
+  --fake: #ff8f7e;
+  --fake-soft: rgba(255, 143, 126, 0.12);
+  --real: #4fcb94;
+  --real-soft: rgba(79, 203, 148, 0.12);
+  --uncertain: #a3afbb;
+  --uncertain-soft: rgba(163, 175, 187, 0.12);
+  --amber: #e8b85a;
+  --amber-text: #e8b85a;
+  --error-text: #ffb4a8;
+  --error-border: rgba(255, 143, 126, 0.35);
+  --overlay: rgba(0, 0, 0, 0.65);
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    color-scheme: dark;
+    --bg: #0f161c;
+    --surface: #16202a;
+    --surface-2: #1c2935;
+    --border: #2c3b48;
+    --border-soft: #233140;
+    --text: #e6edf3;
+    --text-dim: #b0bdc9;
+    --text-faint: #93a1ad;
+    --accent: #6bb3ea;
+    --accent-hover: #8cc5f0;
+    --accent-dim: #2f5f84;
+    --on-accent: #0b1520;
+    --fake: #ff8f7e;
+    --fake-soft: rgba(255, 143, 126, 0.12);
+    --real: #4fcb94;
+    --real-soft: rgba(79, 203, 148, 0.12);
+    --uncertain: #a3afbb;
+    --uncertain-soft: rgba(163, 175, 187, 0.12);
+    --amber: #e8b85a;
+    --amber-text: #e8b85a;
+    --error-text: #ffb4a8;
+    --error-border: rgba(255, 143, 126, 0.35);
+    --overlay: rgba(0, 0, 0, 0.65);
+    --shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
 * {
   box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 html,
@@ -255,7 +345,7 @@ button:disabled {
 }
 
 .counter.warn {
-  color: var(--amber);
+  color: var(--amber-text);
 }
 .counter.error {
   color: var(--fake);
@@ -302,7 +392,7 @@ button:disabled {
   padding: 0.625rem 1.375rem;
   border-radius: var(--radius-sm);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-weight: 600;
   font-size: 0.875rem;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
@@ -311,9 +401,9 @@ button:disabled {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #6f9bff;
+  background: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(91, 140, 255, 0.35);
+  box-shadow: 0 4px 12px rgba(42, 116, 181, 0.35);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -374,7 +464,7 @@ button:disabled {
 .stage.done .stage-dot {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .stage.active .stage-dot {
@@ -723,8 +813,8 @@ button:disabled {
   padding: 0.875rem 1rem;
   border-radius: var(--radius);
   background: var(--fake-soft);
-  border: 1px solid rgba(209, 80, 63, 0.3);
-  color: #9c3a2c;
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
   font-size: 0.875rem;
 }
 
@@ -1160,8 +1250,76 @@ tbody tr:last-child td {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Shared utilities (product layer) ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 1rem;
+  transition: color 0.15s, background 0.15s;
+}
+
+.icon-btn:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+/* ---------- Narrow phones (360px) ---------- */
+
+@media (max-width: 420px) {
+  body {
+    font-size: 0.9rem;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    row-gap: 0.25rem;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+  }
+
+  .topbar .icon-btn {
+    margin-left: auto;
+  }
+
+  .score-value {
+    font-size: 1.5rem;
   }
 }

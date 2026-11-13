@@ -5,8 +5,10 @@ import ThemeToggle from './components/ThemeToggle'
 import { useConsent } from './lib/consent'
 import Analyze from './pages/Analyze'
 import Architecture from './pages/Architecture'
+import About from './pages/About'
 import Landing from './pages/Landing'
 import Model from './pages/Model'
+import Terms from './pages/Terms'
 
 // On route change: reset scroll and move focus to <main> so keyboard and
 // screen-reader users land at the top of the new page, not on a stale link.
@@ -56,6 +58,8 @@ export default function App() {
           <Route path="/analyze" element={<Analyze />} />
           <Route path="/model" element={<Model />} />
           <Route path="/architecture" element={<Architecture />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
         </Routes>
       </main>
 

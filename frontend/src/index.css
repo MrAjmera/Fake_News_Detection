@@ -1549,3 +1549,40 @@ tbody tr:last-child td {
 .link-btn {
   color: var(--text-dim);
 }
+
+/* ---------- Prose pages (Terms, About) ---------- */
+
+.prose {
+  max-width: 48rem;
+}
+
+.prose p,
+.prose li {
+  color: var(--text-dim);
+}
+
+.prose li b,
+.prose p b {
+  color: var(--text);
+}
+
+.prose ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.prose a {
+  color: var(--accent);
+}
+
+.credits {
+  list-style: none;
+  padding: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+.credits p {
+  font-size: 0.875rem;
+}

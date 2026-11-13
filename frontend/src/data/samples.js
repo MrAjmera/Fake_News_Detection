@@ -1,5 +1,5 @@
 // Sample articles copied in at build time — the frontend never reads the filesystem.
-// FAKE + REAL_LIMITATION are verbatim from docs/test_fake.txt and docs/test_real.txt.
+// The satire sample was written for this demo; its behaviour was checked against the live model.
 
 export const SAMPLES = [
   {
@@ -24,6 +24,24 @@ export const SAMPLES = [
       'and no final decision has been made. A spokesman declined to comment on when ' +
       'the department would issue its findings. Shares of major steel producers were ' +
       'little changed in afternoon trading.',
+  },
+  {
+    id: 'satire',
+    label: 'Satire sample',
+    kind: 'satire',
+    note:
+      'This is an invented satirical piece. The model has no concept of satire, so it ' +
+      'judges only the writing style. In testing it read as FAKE across several small ' +
+      'rewordings, which is the same label it gives to deliberate misinformation.',
+    text:
+      'LOCAL MAN SHOCKED TO DISCOVER HE HAS BEEN DOING LAUNDRY WRONG FOR 40 YEARS. ' +
+      'Area resident Gary Plimpton, 52, reportedly stood motionless in his basement on ' +
+      'Tuesday after a neighbor casually mentioned that socks do not, in fact, need to ' +
+      'be sorted by mood. "I have always believed the dryer was judging me," said ' +
+      'Plimpton, clutching a lint trap. Experts at the Institute for Unnecessary ' +
+      'Studies confirmed that nine out of ten dryers are mostly indifferent. At press ' +
+      'time, Plimpton was reportedly rethinking his entire relationship with fabric ' +
+      'softener and had asked his family to respect his privacy.',
   },
   {
     id: 'limitation',

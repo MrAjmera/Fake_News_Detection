@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 import { ConsentProvider } from './lib/consent'
+import { ToastProvider } from './lib/toast'
 import { initTheme } from './lib/theme'
 
 initTheme()
@@ -12,7 +13,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <ConsentProvider>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </ConsentProvider>
     </BrowserRouter>
   </StrictMode>

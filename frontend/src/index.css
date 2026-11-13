@@ -1586,3 +1586,188 @@ tbody tr:last-child td {
 .credits p {
   font-size: 0.875rem;
 }
+
+/* ---------- Analyze polish ---------- */
+
+.page-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.1875rem 0.625rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: var(--fs-xs);
+  color: var(--text-dim);
+}
+
+.api-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--uncertain);
+}
+
+.api-status.online .api-dot {
+  background: var(--real);
+}
+.api-status.offline .api-dot {
+  background: var(--fake);
+}
+.api-status.degraded .api-dot {
+  background: var(--amber);
+}
+
+.count-progress {
+  height: 3px;
+  background: var(--border-soft);
+}
+
+.count-progress-fill {
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.2s var(--ease);
+}
+
+.count-progress-fill.ok {
+  background: var(--real);
+}
+
+.composer-bar .link-btn {
+  text-decoration: underline;
+}
+
+.error p {
+  margin-bottom: 0;
+}
+
+.error .retry {
+  margin-top: 0.75rem;
+  padding: 0.375rem 0.875rem;
+}
+
+.empty-state {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.empty-state p {
+  margin-top: 0.375rem;
+  color: var(--text-dim);
+  font-size: 0.875rem;
+  max-width: 60ch;
+}
+
+.empty-state a {
+  color: var(--accent);
+}
+
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  margin-top: 0.875rem;
+}
+
+.result-actions .btn-secondary {
+  padding: 0.4375rem 1rem;
+}
+
+/* skeletons */
+
+.skeleton-card {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  display: grid;
+  gap: 0.875rem;
+}
+
+.skeleton {
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--border-soft) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+.sk-title {
+  height: 2rem;
+  width: 40%;
+}
+.sk-line {
+  height: 0.875rem;
+  width: 85%;
+}
+.sk-line.short {
+  width: 55%;
+}
+.sk-bar {
+  height: 0.5rem;
+  width: 100%;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* toasts */
+
+.toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 200;
+  display: grid;
+  gap: 0.5rem;
+  max-width: calc(100vw - 2rem);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius);
+  background: var(--text);
+  color: var(--bg);
+  font-size: 0.875rem;
+  box-shadow: var(--shadow);
+  animation: rise 0.25s var(--ease);
+}
+
+.toast.error {
+  border-left: 4px solid var(--fake);
+}
+.toast.success {
+  border-left: 4px solid var(--real);
+}
+
+.toast-close {
+  margin-left: auto;
+  font-size: 1.125rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.8;
+}

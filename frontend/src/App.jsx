@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import ConsentModal from './components/ConsentModal'
 import ThemeToggle from './components/ThemeToggle'
+import { useConsent } from './lib/consent'
 import Analyze from './pages/Analyze'
 import Architecture from './pages/Architecture'
 import Landing from './pages/Landing'
@@ -24,6 +26,7 @@ function useRouteFocus(mainRef) {
 export default function App() {
   const mainRef = useRef(null)
   useRouteFocus(mainRef)
+  const { clearData } = useConsent()
 
   return (
     <div className="shell">
@@ -64,8 +67,13 @@ export default function App() {
         <nav aria-label="Footer">
           <Link to="/terms">Terms &amp; Privacy</Link>
           <Link to="/about">About</Link>
+          <button type="button" className="link-btn footer-btn" onClick={clearData}>
+            Clear my data
+          </button>
         </nav>
       </footer>
+
+      <ConsentModal />
     </div>
   )
 }

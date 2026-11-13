@@ -1,19 +1,12 @@
-import { useEffect, useState } from 'react'
+import ConfidenceGauge from './ConfidenceGauge'
 
 export default function ResultCard({ result }) {
   const uncertain = result.confidence_band === 'UNCERTAIN'
   const tone = uncertain ? 'uncertain' : result.verdict.toLowerCase()
   const glyph = uncertain ? '?' : tone === 'fake' ? '⚠' : '✓'
 
-  const [fill, setFill] = useState(0)
-  useEffect(() => {
-    setFill(0)
-    const id = requestAnimationFrame(() => setFill(result.confidence))
-    return () => cancelAnimationFrame(id)
-  }, [result])
-
   return (
-    <section className={`result ${tone}`}>
+    <section className={`result ${tone}`} aria-label="Analysis result">
       <div className="verdict-row">
         <span className={`verdict ${tone}`}>
           <span className="verdict-glyph" aria-hidden="true">{glyph}</span>
@@ -33,14 +26,13 @@ export default function ResultCard({ result }) {
         </p>
       )}
 
-      <div className="meter">
-        <div className="meter-head">
-          <span>CONFIDENCE</span>
-          <span className="meter-value">{result.confidence.toFixed(2)}%</span>
-        </div>
-        <div className="meter-track">
-          <div className={`meter-fill ${tone}`} style={{ width: `${fill}%` }} />
-        </div>
+      <div className="result-gauge-row">
+        {/* keyed so the fill animation replays for every new result */}
+        <ConfidenceGauge
+          key={`${result.confidence}-${result.verdict}-${result.latency_ms}`}
+          value={result.confidence}
+          tone={tone}
+        />
         <div className="split">
           <span>
             REAL <b>{result.probabilities.real.toFixed(2)}%</b>

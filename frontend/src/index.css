@@ -22,6 +22,7 @@
   --accent-hover: #1f5f9a;
   --accent-dim: #9ecbe8;
   --on-accent: #ffffff;
+  --link: #1b5a93;
 
   --fake: #b8402f;
   --fake-soft: rgba(184, 64, 47, 0.1);
@@ -85,6 +86,7 @@
   --accent-hover: #8cc5f0;
   --accent-dim: #2f5f84;
   --on-accent: #0b1520;
+  --link: #8cc5f0;
 
   --fake: #ff8f7e;
   --fake-soft: rgba(255, 143, 126, 0.12);
@@ -115,6 +117,7 @@
     --accent-hover: #8cc5f0;
     --accent-dim: #2f5f84;
     --on-accent: #0b1520;
+  --link: #8cc5f0;
     --fake: #ff8f7e;
     --fake-soft: rgba(255, 143, 126, 0.12);
     --real: #4fcb94;
@@ -1312,7 +1315,12 @@ tbody tr:last-child td {
     order: 3;
     width: 100%;
     margin-left: 0;
-    overflow-x: auto;
+    justify-content: space-between;
+  }
+
+  .nav a {
+    padding: 0.375rem 0.4375rem;
+    font-size: 0.8125rem;
   }
 
   .topbar .icon-btn {
@@ -1531,7 +1539,7 @@ tbody tr:last-child td {
 }
 
 .modal-body a {
-  color: var(--accent);
+  color: var(--link);
 }
 
 .modal-actions {
@@ -1574,7 +1582,7 @@ tbody tr:last-child td {
 }
 
 .prose a {
-  color: var(--accent);
+  color: var(--link);
 }
 
 .credits {
@@ -1669,7 +1677,7 @@ tbody tr:last-child td {
 }
 
 .empty-state a {
-  color: var(--accent);
+  color: var(--link);
 }
 
 .result-actions {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MAX_WORDS, MIN_WORDS, countWords, predict } from '../api/client'
+import { MAX_CHARS, MAX_WORDS, MIN_WORDS, countWords, predict } from '../api/client'
 import { SAMPLES } from '../data/samples'
 import ApiStatus from '../components/ApiStatus'
 import FeedbackWidget from '../components/FeedbackWidget'
@@ -39,7 +39,8 @@ export default function Analyze() {
 
   const words = countWords(text)
   const tooShort = words < MIN_WORDS
-  const tooLong = words > MAX_WORDS
+  const tooManyChars = text.length > MAX_CHARS
+  const tooLong = words > MAX_WORDS || tooManyChars
   const valid = !tooShort && !tooLong
   const progress = Math.min(100, (words / MIN_WORDS) * 100)
 
@@ -174,7 +175,9 @@ export default function Analyze() {
               <em>
                 {tooShort
                   ? `· need ${MIN_WORDS - words} more`
-                  : tooLong
+                  : tooManyChars
+                    ? `· ${(text.length - MAX_CHARS).toLocaleString()} characters over the ${MAX_CHARS.toLocaleString()} limit`
+                    : tooLong
                     ? `· ${words - MAX_WORDS} over limit`
                     : `· ${MIN_WORDS}–${MAX_WORDS} ok`}
               </em>

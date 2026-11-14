@@ -3,11 +3,14 @@ import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import ConsentModal from './components/ConsentModal'
 import ThemeToggle from './components/ThemeToggle'
 import { useConsent } from './lib/consent'
+import ErrorBoundary from './components/ErrorBoundary'
 import Analyze from './pages/Analyze'
 import Architecture from './pages/Architecture'
 import About from './pages/About'
+import Faq from './pages/Faq'
 import Landing from './pages/Landing'
 import Model from './pages/Model'
+import NotFound from './pages/NotFound'
 import Terms from './pages/Terms'
 
 // On route change: reset scroll and move focus to <main> so keyboard and
@@ -28,6 +31,7 @@ function useRouteFocus(mainRef) {
 export default function App() {
   const mainRef = useRef(null)
   useRouteFocus(mainRef)
+  const { pathname } = useLocation()
   const { clearData } = useConsent()
 
   return (
@@ -53,14 +57,18 @@ export default function App() {
       </header>
 
       <main id="main" className="page" tabIndex={-1} ref={mainRef}>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/analyze" element={<Analyze />} />
-          <Route path="/model" element={<Model />} />
-          <Route path="/architecture" element={<Architecture />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/terms" element={<Terms />} />
-        </Routes>
+        <ErrorBoundary key={pathname}>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/analyze" element={<Analyze />} />
+            <Route path="/model" element={<Model />} />
+            <Route path="/architecture" element={<Architecture />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/faq" element={<Faq />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
       </main>
 
       <footer className="footer">
@@ -71,6 +79,7 @@ export default function App() {
         <nav aria-label="Footer">
           <Link to="/terms">Terms &amp; Privacy</Link>
           <Link to="/about">About</Link>
+          <Link to="/faq">FAQ</Link>
           <button type="button" className="link-btn footer-btn" onClick={clearData}>
             Clear my data
           </button>

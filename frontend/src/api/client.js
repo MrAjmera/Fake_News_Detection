@@ -1,5 +1,7 @@
 export const MIN_WORDS = 20
 export const MAX_WORDS = 1000
+// Mirrors MAX_TEXT_CHARS in backend/schemas.py.
+export const MAX_CHARS = 12000
 
 export function countWords(text) {
   return text.trim().split(/\s+/).filter(Boolean).length
@@ -25,6 +27,14 @@ async function request(path, options) {
   }
 
   if (!response.ok) {
+    if (response.status === 429) {
+      throw new ApiError(
+        'Too many requests. Please wait a minute and try again.'
+      )
+    }
+    if (response.status === 413) {
+      throw new ApiError('That text is too large to send.')
+    }
     const detail = payload?.detail
     throw new ApiError(
       typeof detail === 'string' ? detail : `Server error (HTTP ${response.status}).`

@@ -1,15 +1,52 @@
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 import inference
 from schemas import HealthResponse, ModelInfoResponse, PredictRequest, PredictResponse
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 VIZ_DIR = REPO_ROOT / "visualizations"
+DIST_DIR = REPO_ROOT / "frontend" / "dist"
+
+# --- configuration (see .env.example) ---------------------------------------
+# Comma-separated list of browser origins allowed to call the API.
+FRONTEND_ORIGINS = [
+    o.strip()
+    for o in os.environ.get("FRONTEND_ORIGIN", "http://localhost:5173").split(",")
+    if o.strip()
+]
+PREDICT_RATE_LIMIT = os.environ.get("PREDICT_RATE_LIMIT", "30/minute")
+# Requests larger than this are refused before the body is read into memory.
+MAX_BODY_BYTES = 64 * 1024
+
+# CSP for the built single-page app. Only same-origin scripts and styles are
+# allowed; nothing inline. React sets style props through the DOM, which this
+# policy permits.
+APP_CSP = (
+    "default-src 'self'; "
+    "script-src 'self'; "
+    "style-src 'self'; "
+    "img-src 'self' data:; "
+    "connect-src 'self'; "
+    "object-src 'none'; "
+    "base-uri 'self'; "
+    "form-action 'self'; "
+    "frame-ancestors 'none'"
+)
+# JSON API responses never need to load anything.
+API_CSP = "default-src 'none'; frame-ancestors 'none'"
+# FastAPI's interactive docs load assets from a CDN, so they are exempt.
+CSP_EXEMPT_PREFIXES = ("/docs", "/redoc")
 
 MODEL_INFO = {
     "model_type": "TF-IDF + Logistic Regression (V2)",
@@ -28,6 +65,8 @@ MODEL_INFO = {
     ),
 }
 
+limiter = Limiter(key_func=get_remote_address)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -36,14 +75,53 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Fake News Detection API", lifespan=lifespan)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(request: Request, exc: RequestValidationError):
+    # FastAPI's default 422 body echoes the submitted input back. Return a fixed
+    # message instead so user text never appears in responses or error logs.
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": (
+                "Invalid request. Send JSON like {\"text\": \"...\"} with at most "
+                "12,000 characters."
+            )
+        },
+    )
+
+
+# No credentials/cookies are used, so credentialed CORS is not enabled.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=FRONTEND_ORIGINS,
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
+
+
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    length = request.headers.get("content-length")
+    if length and length.isdigit() and int(length) > MAX_BODY_BYTES:
+        response = JSONResponse(
+            status_code=413, content={"detail": "Request body too large."}
+        )
+    else:
+        response = await call_next(request)
+
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    response.headers["X-Frame-Options"] = "DENY"
+    if not request.url.path.startswith(CSP_EXEMPT_PREFIXES):
+        is_api = request.url.path.startswith("/api/")
+        response.headers["Content-Security-Policy"] = API_CSP if is_api else APP_CSP
+    return response
+
 
 if VIZ_DIR.exists():
     app.mount("/static/viz", StaticFiles(directory=VIZ_DIR), name="viz")
@@ -60,8 +138,24 @@ def model_info():
 
 
 @app.post("/api/predict", response_model=PredictResponse)
-def predict(request: PredictRequest):
+@limiter.limit(PREDICT_RATE_LIMIT)
+def predict(request: Request, body: PredictRequest):
     try:
-        return inference.predict(request.text)
+        return inference.predict(body.text)
     except inference.ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+# --- serve the built frontend (only when `npm run build` has been run) -------
+# In development the Vite dev server serves the UI and proxies /api here.
+if DIST_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=DIST_DIR / "assets"), name="assets")
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def spa(path: str):
+        if path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="Not found.")
+        candidate = (DIST_DIR / path).resolve()
+        if candidate.is_file() and DIST_DIR.resolve() in candidate.parents:
+            return FileResponse(candidate)
+        return FileResponse(DIST_DIR / "index.html")

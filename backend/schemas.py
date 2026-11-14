@@ -1,9 +1,13 @@
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+# 1000 words is the model's limit; 12,000 characters leaves room for long words
+# while stopping oversized payloads before they reach the model.
+MAX_TEXT_CHARS = 12_000
 
 
 class PredictRequest(BaseModel):
-    text: str
+    text: str = Field(max_length=MAX_TEXT_CHARS)
 
 
 class Probabilities(BaseModel):

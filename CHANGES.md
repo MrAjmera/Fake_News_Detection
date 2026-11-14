@@ -66,3 +66,52 @@ Paste an article, see the verdict and why, then understand how the model was bui
 - **Dataset licences:** `data/README.md` lists sources but states no licences. The About page therefore says each dataset follows its publisher's licence, and does not name specific licences. Add them if you know them. `fake_3` and CoAID have no source link in the README.
 - **Replace `src/data/metrics.json`** with real figures, then set `is_sample` to `false`.
 - Note that port 5173 on this machine is used by another project ("route-optimizer"), so I tested on port 5175. The backend CORS setting (`localhost:5173`) is unchanged and is not needed while using the Vite proxy.
+
+---
+
+# Changes: Phase 2 (hardening, tests, resilience)
+
+The ML model and the `/api/predict` response format are still untouched. Same branch.
+
+## Files, and why each was touched
+
+### Backend security
+- `backend/main.py`:
+  - **Rate limit** on `POST /api/predict` (default 30 per minute per IP, set by `PREDICT_RATE_LIMIT`). Extra requests get HTTP 429.
+  - **CORS** now allows only the configured frontend origin (`FRONTEND_ORIGIN`, default `http://localhost:5173`), only GET/POST, and no cookies.
+  - **Security headers** on every response: `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: no-referrer`, `X-Frame-Options: DENY`. The page policy allows only same-origin scripts and styles. The `/docs` pages are exempt because they load assets from a CDN.
+  - **Size guard:** bodies over 64 KB are refused with 413 before being read.
+  - **No user text in responses or logs:** the default validation error repeats the submitted text back, so it is replaced with a fixed message. The app has no logging or print calls anywhere.
+  - **Serves the built frontend** from `frontend/dist` when it exists, so the production-style app and its CSP can be tested on one port. Without a build, nothing changes (development still uses the Vite server).
+- `backend/schemas.py`: the request text is capped at 12,000 characters.
+- `backend/requirements.txt`: added `slowapi`.
+- `backend/requirements-dev.txt` (new): `pytest`, `httpx` (needed by FastAPI's test client), `pip-audit`.
+- `.env.example` (new): documents the two settings. No secrets exist or are needed.
+
+### Tests
+- `backend/tests/test_api.py`, `conftest.py`, `backend/pytest.ini`: 6 tests: a normal prediction, too-short text, over-limit text (checks the text is not echoed), the rate limit, security headers, and the CORS allowlist. They use the real model.
+
+### Frontend
+- `frontend/src/api/client.js`, `pages/Analyze.jsx`: the same 12,000-character cap in the UI (the counter says how far over you are), plus plain messages for "too many requests" and "too large".
+- `frontend/src/components/ErrorBoundary.jsx`: a friendly screen instead of a blank page if a component crashes.
+- `frontend/src/pages/NotFound.jsx`: 404 page. `frontend/src/pages/Faq.jsx`: FAQ (linked from the footer).
+- `frontend/src/App.jsx`, `index.css`: wiring for the above. No `dangerouslySetInnerHTML` is used anywhere in the code.
+
+## Audit results (reported only, nothing upgraded)
+- **npm audit:** 2 high-severity findings, both through the dev tool Vite 8.3.0–8.3.2 (its dev server and the `launch-editor` helper). They affect the development server, not the built site. `npm audit fix` offers a fix within the same major version; I did not apply it. Say the word and I will.
+- **pip-audit:** 12 entries, all for `pip` itself (installer tooling), none for the app's libraries (fixed in pip 26.2).
+- **Not a vulnerability, but worth knowing:** the saved model was created with scikit-learn 1.7.0 and the virtual environment has 1.9.1, so loading it prints a version warning. Predictions work, and the tests pass. Pinning scikit-learn to 1.7.0 in `requirements.txt` would remove the warning; I did not change it.
+
+## What I verified by running it
+- `pytest`: 6 passed. `npm run build` and `npm run lint`: pass with no warnings.
+- curl against the running backend: security headers present on API and page responses; unknown `/api/...` path gives a JSON 404 and other unknown paths serve the app (which shows the 404 page); a disallowed origin gets no CORS header and the allowed one does; too-short text gives the clear message; 17,000-character text gives 422 with no echo of the text; a 70 KB body gives 413; the backend's own output contained none of the submitted text.
+- Browser check of the **built** app under the new CSP: zero CSP violations and no console or network errors. Home, Analyze (real prediction, gauge, highlighting), Model, Architecture (all 3 diagrams), FAQ, About and the 404 page rendered. Dark-mode toggle worked.
+
+## What I did not verify
+- The rate-limit 429 message in the browser (covered by the automated test only).
+- Behaviour behind a real reverse proxy: all users behind one proxy would share one IP and one rate-limit bucket unless the proxy forwards the client address.
+- Full Lighthouse was not re-run, as agreed.
+
+## Things you need to act on
+- **Roll number:** your message again contained the literal text `<your roll number>`. Send the real number and I will add it to the About page.
+- Production use: set `FRONTEND_ORIGIN` to the real site address, and install dev tools with `pip install -r backend/requirements-dev.txt`.

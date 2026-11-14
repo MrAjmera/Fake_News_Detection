@@ -1914,3 +1914,122 @@ tbody tr:last-child td {
     padding: 1.125rem;
   }
 }
+
+/* ---------- Evaluation: metrics table + confusion matrix ---------- */
+
+.sample-banner {
+  margin-bottom: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px dashed var(--amber);
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.eval-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+tbody th[scope="row"] {
+  text-align: left;
+  font-weight: inherit;
+  font-size: inherit;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text);
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+tbody tr:last-child th[scope="row"] {
+  border-bottom: none;
+  font-weight: 600;
+}
+
+.cm {
+  margin: 0;
+}
+
+.cm-grid {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.cm-row {
+  display: grid;
+  grid-template-columns: 5.5rem repeat(2, minmax(0, 1fr));
+  gap: 0.375rem;
+  align-items: stretch;
+}
+
+.cm-corner,
+.cm-head {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+}
+
+.cm-corner {
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.cm-head {
+  justify-content: center;
+}
+
+.cm-row > .cm-head:first-child {
+  justify-content: flex-start;
+}
+
+.cm-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem 0.375rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-soft);
+  text-align: center;
+}
+
+.cm-cell.hit {
+  background: color-mix(in srgb, var(--real) var(--heat), var(--surface));
+}
+
+.cm-cell.miss {
+  background: color-mix(in srgb, var(--fake) var(--heat), var(--surface));
+}
+
+/* number sits on a solid chip so contrast never depends on the heat colour */
+.cm-num {
+  padding: 0.0625rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 1.125rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.cm-share {
+  padding: 0 0.375rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-dim);
+  font-size: 0.6875rem;
+}
+
+@media (max-width: 420px) {
+  .cm-row {
+    grid-template-columns: 3.5rem repeat(2, minmax(0, 1fr));
+  }
+}

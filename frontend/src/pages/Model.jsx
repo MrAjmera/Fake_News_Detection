@@ -1,20 +1,10 @@
 import { useEffect, useState } from 'react'
 import { getModelInfo } from '../api/client'
+import EvaluationSection from '../components/EvaluationSection'
 
 const REPORT_ROWS = [
   ['True News', '0.96', '0.92', '0.94', '7,305'],
   ['Fake News', '0.93', '0.97', '0.95', '8,382'],
-  ['Overall accuracy', '—', '—', '0.95', '15,687'],
-]
-
-// Logistic Regression (V2) — the model actually served by the API.
-// Reproduced by re-running train_v2.py's exact ingestion/split (random_state=42)
-// against the saved models_v2/model_lr_v2.pkl + vectorizer_v2.pkl on 2026-09-15.
-// Support counts match the Random Forest table above 1:1, confirming this is
-// the same held-out test set, not a re-sampled one.
-const REPORT_ROWS_LR = [
-  ['True News', '0.96', '0.94', '0.95', '7,305'],
-  ['Fake News', '0.95', '0.96', '0.96', '8,382'],
   ['Overall accuracy', '—', '—', '0.95', '15,687'],
 ]
 
@@ -76,31 +66,7 @@ export default function Model() {
         ))}
       </div>
 
-      <section className="section">
-        <h2>Classification report — Logistic Regression (served here)</h2>
-        <div className="card table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Class</th>
-                <th>Precision</th>
-                <th>Recall</th>
-                <th>F1-score</th>
-                <th>Support</th>
-              </tr>
-            </thead>
-            <tbody>
-              {REPORT_ROWS_LR.map((row) => (
-                <tr key={row[0]}>
-                  {row.map((cell, i) => (
-                    <td key={i}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <EvaluationSection />
 
       <section className="section">
         <h2>Classification report — Random Forest (reference)</h2>

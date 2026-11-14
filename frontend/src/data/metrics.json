@@ -1,0 +1,10 @@
+{
+  "_comment": "Replace the values below with real evaluation results, then set is_sample to false. Rows of confusion_matrix are the ACTUAL class, columns the PREDICTED class, in the order given by labels. Precision, recall, F1, support and accuracy are all derived from the matrix.",
+  "is_sample": true,
+  "model": "Logistic Regression (V2)",
+  "labels": ["REAL", "FAKE"],
+  "confusion_matrix": [
+    [6870, 435],
+    [327, 8055]
+  ]
+}

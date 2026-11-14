@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { MAX_WORDS, MIN_WORDS, countWords, predict } from '../api/client'
 import { SAMPLES } from '../data/samples'
 import ApiStatus from '../components/ApiStatus'
+import FeedbackWidget from '../components/FeedbackWidget'
 import HighlightedText from '../components/HighlightedText'
 import HistoryPanel from '../components/HistoryPanel'
 import ResultActions from '../components/ResultActions'
@@ -251,6 +252,7 @@ export default function Analyze() {
           <>
             <ResultCard result={result} />
             <ResultActions result={result} text={analyzedText} />
+            <FeedbackWidget key={result.latency_ms + result.confidence} result={result} />
             <SignalsPanel signals={result.top_signals} />
             <HighlightedText text={analyzedText} signals={result.top_signals} />
           </>

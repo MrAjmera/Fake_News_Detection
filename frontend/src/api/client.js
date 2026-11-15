@@ -61,6 +61,15 @@ export function sendFeedback({ rating, comment, verdict, confidence_band, confid
   })
 }
 
+// Asks the server to open a public news link and return only the article text.
+export function extractUrl(url) {
+  return request('/api/extract-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+  })
+}
+
 export function getModelInfo() {
   return request('/api/model-info')
 }

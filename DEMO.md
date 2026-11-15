@@ -72,3 +72,10 @@ The Reserve Bank of India announced today that interest rates will remain unchan
   `2026-11-15 18:15:32 UTC | THUMBS UP | model said: FAKE 99.63% (HIGH) | comment: ...`
   Open it after the demo to show real responses. It never contains the article text.
 - If the server is unreachable, feedback is kept in the browser instead and the page says so.
+
+## Link input (added Nov 2026)
+
+1. On **Analyze**, paste a public news link in the top box and press **Fetch article**. The article text appears in the text box so you can check it, then press **Analyze**.
+2. Prepare 3 links before the demo and test them the same day: a big news site article (usually works), a satire or fake-news site, and an Indian news site. Say honestly that results on live links can be less reliable than the 95% test accuracy.
+3. If a link fails (paywall, bot-blocking, JavaScript-only page), the page says so. Paste the text instead. Wikipedia, for example, refuses automated readers.
+4. The top bar shows **Signed in as <id>** next to Sign out.

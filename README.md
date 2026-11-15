@@ -100,6 +100,7 @@ Base URL: `http://127.0.0.1:8000`
 | `GET /api/health` | `{"status": "ok", "model_loaded": true}` |
 | `GET /api/model-info` | Model type, accuracies, feature count, corpora, deduplication note |
 | `POST /api/predict` | Score one article |
+| `POST /api/extract-url` | Open a public news link and return only its article text (SSRF-protected, 10/minute) |
 | `POST /api/feedback` | Append a thumbs up/down + comment to `feedback.txt` (never the article text) |
 
 **Request**
@@ -138,6 +139,7 @@ Base URL: `http://127.0.0.1:8000`
 - Rate limit on `/api/predict` (slowapi), request size caps, CORS limited to the configured frontend origin (GET/POST only, no cookies).
 - Response headers: `Content-Security-Policy` (same-origin scripts and styles only), `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`.
 - The app never logs or stores article text. No tracking and no personal-data collection.
+- **Link input (`/api/extract-url`):** the server downloads a user-typed link, so it only allows http/https on default ports, refuses any address that is not public internet (localhost, private ranges, cloud metadata), re-checks every redirect (max 3), uses an 8 s timeout, a 2 MB size cap and HTML only, and stores nothing. Article text is extracted with `trafilatura`. Known gap: DNS rebinding is not fully covered (see `backend/url_fetch.py`).
 - **Feedback file:** each thumbs up/down + optional comment (500 characters max) + the model's verdict is appended as one line to `feedback.txt` in the project root (git-ignored; set `FEEDBACK_FILE` to move it). Comments are flattened to one line so they cannot forge entries. `POST /api/feedback` is rate-limited (`FEEDBACK_RATE_LIMIT`, default 20/minute).
 - **Demo sign-in:** one shared id and password checked in the browser (`frontend/src/lib/authConfig.js`; change with `VITE_DEMO_USER` / `VITE_DEMO_PASS` in `frontend/.env.local`, then `npm run build`). It only limits who opens the demo. It is **not real security**, because the values are readable in the built JavaScript. Use real accounts before storing anything sensitive.
 - The UI renders text as plain React text nodes and never uses `dangerouslySetInnerHTML`.

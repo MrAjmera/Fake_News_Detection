@@ -43,6 +43,12 @@ export default function Terms() {
             to produce a score. The app does not save it or write it to logs.
           </li>
           <li>
+            <b>Links you paste</b> are opened by the project&apos;s server, which
+            downloads that one public page and keeps only its article text for
+            your analysis. Nothing is stored. Private and internal addresses are
+            refused.
+          </li>
+          <li>
             <b>Stored in your browser</b> (local storage on this device):
             your answer to the first-visit notice, your light/dark choice, your
             demo sign-in, and a copy of any feedback you choose to leave.

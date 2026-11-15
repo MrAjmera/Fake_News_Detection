@@ -2219,3 +2219,64 @@ tbody tr:last-child th[scope="row"] {
 .topbar-spacer {
   flex: 1;
 }
+
+/* ---------- link input on the Analyze page ---------- */
+.url-row {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+.url-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-base);
+}
+
+.url-row .btn-secondary {
+  white-space: nowrap;
+}
+
+.url-hint,
+.url-error {
+  margin: 0 0 var(--space-md);
+  font-size: var(--fs-sm);
+}
+
+.url-hint {
+  color: var(--text-faint);
+}
+
+.url-error {
+  color: var(--error-text);
+}
+
+@media (max-width: 480px) {
+  .url-row {
+    flex-direction: column;
+  }
+}
+
+/* ---------- signed-in id in the top bar ---------- */
+.signed-in-as {
+  color: var(--text-dim);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.signed-in-as b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 640px) {
+  .signed-in-as {
+    display: none;
+  }
+}

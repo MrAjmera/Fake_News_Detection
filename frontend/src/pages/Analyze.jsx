@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { MAX_CHARS, MAX_WORDS, MIN_WORDS, countWords, predict } from '../api/client'
+import {
+  MAX_CHARS,
+  MAX_WORDS,
+  MIN_WORDS,
+  countWords,
+  extractUrl,
+  predict,
+} from '../api/client'
 import { SAMPLES } from '../data/samples'
 import ApiStatus from '../components/ApiStatus'
 import FeedbackWidget from '../components/FeedbackWidget'
@@ -36,6 +43,9 @@ export default function Analyze() {
   const [error, setError] = useState(null)
   const [notice, setNotice] = useState(null)
   const [history, setHistory] = useState([])
+  const [url, setUrl] = useState('')
+  const [fetching, setFetching] = useState(false)
+  const [fetchError, setFetchError] = useState(null)
 
   const words = countWords(text)
   const tooShort = words < MIN_WORDS
@@ -53,6 +63,8 @@ export default function Analyze() {
       setError(null)
       setNotice(null)
       setStage(-1)
+      setUrl('')
+      setFetchError(null)
     }
     window.addEventListener(DATA_CLEARED_EVENT, reset)
     return () => window.removeEventListener(DATA_CLEARED_EVENT, reset)
@@ -64,6 +76,38 @@ export default function Analyze() {
     setError(null)
     setStage(-1)
     setNotice(sample.note ?? null)
+  }
+
+  // Our server opens the link and returns only the article text. The text goes
+  // into the box so the user can read and edit exactly what the model will see.
+  async function onFetch(e) {
+    e.preventDefault()
+    let link = url.trim()
+    if (!link || fetching) return
+    if (!/^[a-z][a-z0-9+.-]*:/i.test(link)) link = `https://${link}`
+
+    setFetching(true)
+    setFetchError(null)
+    try {
+      const data = await extractUrl(link)
+      setText(data.text)
+      setResult(null)
+      setError(null)
+      setStage(-1)
+      const name = data.title ? `"${data.title}" from ${data.source}` : data.source
+      setNotice(
+        `Article text fetched: ${name}.` +
+          (data.truncated
+            ? ` It was long, so only the first ${MAX_WORDS.toLocaleString()} words are used.`
+            : '') +
+          ' Check that it looks right, then press Analyze.'
+      )
+      toast('Article text fetched', 'success')
+    } catch (err) {
+      setFetchError(err.message)
+    } finally {
+      setFetching(false)
+    }
   }
 
   async function onAnalyze() {
@@ -144,6 +188,43 @@ export default function Analyze() {
             give a meaningful result.
           </p>
         </div>
+
+        <form className="url-row" onSubmit={onFetch} noValidate>
+          <label htmlFor="article-url" className="sr-only">
+            Link to a news article
+          </label>
+          <input
+            id="article-url"
+            type="text"
+            inputMode="url"
+            autoComplete="off"
+            spellCheck="false"
+            placeholder="Or paste a link to a news article (https://…)"
+            value={url}
+            onChange={(e) => {
+              setUrl(e.target.value)
+              setFetchError(null)
+            }}
+          />
+          <button
+            type="submit"
+            className="btn-secondary"
+            disabled={!url.trim() || fetching}
+          >
+            {fetching ? 'Fetching…' : 'Fetch article'}
+          </button>
+        </form>
+        {fetchError ? (
+          <p className="url-error" role="alert">
+            {fetchError}
+          </p>
+        ) : (
+          <p className="url-hint">
+            Our server opens the link and reads only the article text. Paywalled,
+            JavaScript-only or bot-blocking sites may not work; you can always
+            paste the text instead.
+          </p>
+        )}
 
         <div className="composer">
           <label htmlFor="article-text" className="sr-only">

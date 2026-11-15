@@ -12,6 +12,9 @@ const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [signedIn, setSignedIn] = useState(() => readJSON(KEY)?.ok === true)
+  // Only the id is kept (never the password). Older flags without an id
+  // belong to the one demo user, so fall back to it.
+  const [userId, setUserId] = useState(() => readJSON(KEY)?.id ?? DEMO_USER)
 
   useEffect(() => {
     const onCleared = () => setSignedIn(false)
@@ -21,7 +24,8 @@ export function AuthProvider({ children }) {
 
   const signIn = useCallback((id, password) => {
     if (id.trim() === DEMO_USER && password === DEMO_PASS) {
-      writeJSON(KEY, { ok: true, at: new Date().toISOString() })
+      writeJSON(KEY, { ok: true, id: id.trim(), at: new Date().toISOString() })
+      setUserId(id.trim())
       setSignedIn(true)
       return true
     }
@@ -33,7 +37,10 @@ export function AuthProvider({ children }) {
     setSignedIn(false)
   }, [])
 
-  const value = useMemo(() => ({ signedIn, signIn, signOut }), [signedIn, signIn, signOut])
+  const value = useMemo(
+    () => ({ signedIn, userId, signIn, signOut }),
+    [signedIn, userId, signIn, signOut]
+  )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 

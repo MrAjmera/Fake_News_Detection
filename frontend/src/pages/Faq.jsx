@@ -30,6 +30,10 @@ const ITEMS = [
     'It is sent to the server to be scored and is not saved or logged. Your history stays in your open tab only. If you leave feedback, only your rating, comment and the model’s verdict are saved, never the article. See the Terms & Privacy page for details.',
   ],
   [
+    'Why did my link not work?',
+    'Our server opens the link and reads the article text. Paywalled pages, pages that need JavaScript or a login, sites that block automated readers, and pages that are not a single article cannot be read. Paste the article text instead. Results from links can also be less reliable than the test accuracy, because live pages differ from the data the model was trained on.',
+  ],
+  [
     'Why did I get a "too many requests" message?',
     'The server limits how often one device can send requests, to keep the demo available for everyone. Wait a minute and try again.',
   ],

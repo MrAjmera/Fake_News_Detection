@@ -5,3 +5,5 @@ joblib
 numpy
 pydantic
 slowapi
+httpx
+trafilatura

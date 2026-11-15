@@ -15,7 +15,10 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 import inference
+import url_fetch
 from schemas import (
+    ExtractUrlRequest,
+    ExtractUrlResponse,
     FeedbackRequest,
     FeedbackResponse,
     HealthResponse,
@@ -37,6 +40,7 @@ FRONTEND_ORIGINS = [
 ]
 PREDICT_RATE_LIMIT = os.environ.get("PREDICT_RATE_LIMIT", "30/minute")
 FEEDBACK_RATE_LIMIT = os.environ.get("FEEDBACK_RATE_LIMIT", "20/minute")
+URL_RATE_LIMIT = os.environ.get("URL_RATE_LIMIT", "10/minute")
 # Thumbs up/down and comments are appended here, one line each. The file holds
 # user comments, so it is git-ignored. Article text is never written to it.
 FEEDBACK_FILE = Path(os.environ.get("FEEDBACK_FILE", REPO_ROOT / "feedback.txt"))
@@ -99,7 +103,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
     # FastAPI's default 422 body echoes the submitted input back. Return a fixed
     # message instead so user text never appears in responses or error logs.
-    if request.url.path == "/api/feedback":
+    if request.url.path == "/api/extract-url":
+        detail = "Invalid request. Send JSON like {\"url\": \"https://...\"}."
+    elif request.url.path == "/api/feedback":
         detail = (
             "Invalid feedback. Send a rating of \"up\" or \"down\" and a comment "
             "of at most 500 characters."
@@ -162,6 +168,16 @@ def predict(request: Request, body: PredictRequest):
         return inference.predict(body.text)
     except inference.ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+@app.post("/api/extract-url", response_model=ExtractUrlResponse)
+@limiter.limit(URL_RATE_LIMIT)
+def extract_url(request: Request, body: ExtractUrlRequest):
+    """Fetch a public news page and return only its article text (nothing is stored)."""
+    try:
+        return url_fetch.extract_from_url(body.url)
+    except url_fetch.UrlError as e:
+        raise HTTPException(status_code=e.status, detail=str(e))
 
 
 @app.post("/api/feedback", response_model=FeedbackResponse)

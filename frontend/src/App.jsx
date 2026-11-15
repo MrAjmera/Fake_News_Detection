@@ -35,7 +35,7 @@ export default function App() {
   useRouteFocus(mainRef)
   const { pathname } = useLocation()
   const { clearData } = useConsent()
-  const { signedIn, signOut } = useAuth()
+  const { signedIn, userId, signOut } = useAuth()
   // The Terms & Privacy page stays readable before signing in.
   const showApp = signedIn || pathname === '/terms'
 
@@ -60,6 +60,11 @@ export default function App() {
             <NavLink to="/architecture">Architecture</NavLink>
             <NavLink to="/about">About</NavLink>
           </nav>
+        )}
+        {signedIn && (
+          <span className="signed-in-as">
+            Signed in as <b>{userId}</b>
+          </span>
         )}
         {signedIn && (
           <button type="button" className="link-btn signout-btn" onClick={signOut}>

@@ -155,3 +155,17 @@ The ML model and the `/api/predict` response format are still untouched. Same br
 | `frontend/src/api/client.js`, `lib/feedbackStore.js`, `components/FeedbackWidget.jsx` | Feedback is sent to the server and also kept in the browser; the UI says which happened. | Works offline and keeps JSON export. |
 | `frontend/src/lib/authConfig.js`, `lib/auth.jsx`, `pages/Login.jsx`, `App.jsx`, `main.jsx`, `index.css`, `frontend/.env.example` | One shared demo id/password checked in the browser; app pages hidden until sign-in (Terms stays public); Sign out button; "Clear my data" also signs out. | Simple gate for sharing with friends. Explicitly not real security. |
 | `Terms.jsx`, `ConsentModal.jsx`, `Faq.jsx`, `README.md`, `DEMO.md` | Privacy wording updated: feedback now reaches the server; one shared demo sign-in exists. | The old text said nothing was sent to the server and there were no accounts. |
+
+---
+
+## Follow-up: link input and signed-in id (Nov 2026)
+
+| File | Change | Why |
+|------|--------|-----|
+| `backend/url_fetch.py` (new) | Safe download + article extraction: http/https and default ports only, host must resolve to public addresses only, manual redirects (max 3, each re-checked), 8 s timeout, 2 MB cap, HTML only, text cut to the model's 1,000-word / 12,000-character limits, nothing stored. | Opens the most visible new feature without opening the server to SSRF. |
+| `backend/main.py`, `schemas.py` | `POST /api/extract-url`, rate limit `URL_RATE_LIMIT` (10/minute), fixed 422 message. | |
+| `backend/requirements.txt` | Added `httpx` (moved from dev) and `trafilatura`. | Download and article extraction. |
+| `backend/tests/test_url.py` (new) | 26 test cases: unsafe links (file://, localhost, 10.x, 192.168.x, 169.254.169.254, IPv6 loopback, credentials, odd ports), private DNS answers, redirect to an internal address, oversized and non-HTML pages, endpoint success, truncation, empty page, rate limit. Backend total: 35 tests passing. | |
+| `frontend/src/pages/Analyze.jsx`, `api/client.js`, `index.css` | Link box + "Fetch article"; text goes into the box for review; friendly errors; scheme added automatically. | |
+| `frontend/src/lib/auth.jsx`, `App.jsx` | Stores the signed-in id (never the password) and shows "Signed in as <id>" next to Sign out. | |
+| `Terms.jsx`, `Faq.jsx`, `README.md`, `DEMO.md`, `.env.example` | Privacy and usage wording for link input. | |

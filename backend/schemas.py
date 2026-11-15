@@ -48,6 +48,18 @@ class FeedbackResponse(BaseModel):
     saved: bool
 
 
+class ExtractUrlRequest(BaseModel):
+    url: str = Field(max_length=2048)
+
+
+class ExtractUrlResponse(BaseModel):
+    title: str | None
+    text: str
+    word_count: int
+    truncated: bool
+    source: str
+
+
 class HealthResponse(BaseModel):
     status: str
     model_loaded: bool

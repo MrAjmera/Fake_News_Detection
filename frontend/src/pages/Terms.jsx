@@ -9,7 +9,7 @@ export default function Terms() {
       <section className="section">
         <h2>What this is</h2>
         <p>
-          Fake News Detection is a student project built for PBL-1 (CSE2170) at
+          Fake News Detection is a student project built for PBL-V at
           Manipal University Jaipur. It is a demonstration of a machine
           learning model, not a commercial product or a public service.
         </p>

@@ -24,7 +24,7 @@
 | 4 | Click **Real sample**, then **Analyze**. | "A Reuters-style article reads as REAL with high confidence. 'reuters' and 'said' are among the strongest signals." |
 | 5 | Click **Known limitation**, then **Analyze**. Read the amber note. | "This is a genuine Reserve Bank of India report and the model calls it FAKE. The training data is US/Reuters-heavy, so other styles fall outside what it learned. We show this on purpose." |
 | 6 | Click **Helpful** or **Not helpful** under a result and save. Click **Copy result** and **Export JSON**. | "Feedback stays in the browser and never includes the article text. It is built so a backend can replace the storage later." |
-| 7 | Open **Model**. Walk through accuracy cards, the metrics table, the confusion matrix, and the V1→V2 story. | "V1 stalled at 69%. Three fixes took V2 to about 95%: remove clickbait data, stop mixing unscaled features with TF-IDF, and remove about 60,000 duplicate articles that leaked between train and test." |
+| 7 | Open **Model**. Walk through accuracy cards, the metrics table, the confusion matrix, and the V1→V2 story. | "V1 stalled at 69%. Three fixes took V2 to about 95%: remove clickbait data, stop mixing unscaled features with TF-IDF, and remove 53,955 duplicate articles that leaked between train and test." |
 | 8 | Open **Architecture**. Show the three diagrams. | "System design, one request end to end including the too-short-text guard rail, and the ML pipeline." |
 | 9 | Toggle dark mode. Resize the window narrow. | "Follows the OS setting, works down to phone width, keyboard accessible." |
 | 10 | Optional: paste 10 words and press Analyze (the button stays disabled). | "The 20-word minimum is enforced in the UI and again in the API." |

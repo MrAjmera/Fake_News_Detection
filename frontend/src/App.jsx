@@ -95,7 +95,7 @@ export default function App() {
 
       <footer className="footer">
         <p>
-          Academic project · PBL-1 (CSE2170) · Manipal University Jaipur. Not a
+          Academic project · PBL-V · Manipal University Jaipur. Not a
           fact-checker.
         </p>
         <nav aria-label="Footer">

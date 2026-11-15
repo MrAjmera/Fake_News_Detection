@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom'
 
 const STEPS = [
   [
-    'Paste an article',
-    'Drop in the full text of a news article, at least 20 words. The model was trained on complete articles, not headlines.',
+    'Paste an article or a link',
+    'Drop in the full text of a news article (at least 20 words), or paste a link to a public news page and the server fetches the article text for you. The model was trained on complete articles, not headlines.',
   ],
   [
     'The model scores it',
@@ -12,6 +12,21 @@ const STEPS = [
   [
     'See the verdict and why',
     'You get REAL, FAKE or UNCERTAIN, a confidence figure, and the exact words in your text that pushed the decision.',
+  ],
+]
+
+const INSIDE = [
+  [
+    'Explained verdicts',
+    'The words in your text that pushed the decision are listed and highlighted, so you can see why.',
+  ],
+  [
+    'Honest evaluation',
+    'The Model page shows the real confusion matrix, precision and recall, and where the model is weak.',
+  ],
+  [
+    'Your feedback',
+    'Rate a result and leave a comment. It is saved to a text file for the project team, never with your article.',
   ],
 ]
 
@@ -62,6 +77,18 @@ export default function Landing() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="section" aria-labelledby="inside-title">
+        <h2 id="inside-title">What&apos;s inside</h2>
+        <ul className="limits">
+          {INSIDE.map(([title, body]) => (
+            <li key={title}>
+              <b>{title}</b>
+              <p>{body}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="section" aria-labelledby="limits-title">

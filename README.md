@@ -1,6 +1,6 @@
 # Fake News Detection (V2)
 
-**PBL-1 (CSE2170) · Manipal University Jaipur · Author: Krrish Ajmera**
+**PBL-V · Manipal University Jaipur · Author: Krrish Ajmera · Under the guidance of Amit Kumar Gupta**
 
 A web app that estimates whether a news article's writing resembles the fake or the real articles a machine-learning model was trained on. Paste an article, get a verdict, a confidence score, and the exact words in your text that drove the result.
 
@@ -14,16 +14,16 @@ A web app that estimates whether a news article's writing resembles the fake or 
 
 | Part | What it is |
 |------|------------|
-| **Model (V2)** | TF-IDF (15,000 features, 1–2-grams) + Logistic Regression, trained on ISOT, WELFake, fake_3 and CoAID after removing ~60,000 duplicate articles. Trained by `src/train_v2.py`, saved in `models_v2/`. |
+| **Model (V2)** | TF-IDF (15,000 features, 1–2-grams) + Logistic Regression, trained on ISOT, WELFake, fake_3 and CoAID after removing 53,955 duplicate rows (132,386 raw rows, 78,431 unique articles). Trained by `src/train_v2.py`, saved in `models_v2/`. |
 | **API** | FastAPI app in `backend/`. Loads the model once at startup and serves `/api/predict`. |
 | **UI** | React + Vite app in `frontend/`: Home, Analyze, Model, Architecture, About, Terms & Privacy, FAQ. |
 
-### Model results (recorded V2 training run)
+### Model results
 
 | Algorithm | Test accuracy |
 |-----------|---------------|
 | Random Forest | 95.61% (best) |
-| **Logistic Regression** | **95.14% (served by the app)** |
+| **Logistic Regression** | **95.28% (served by the app; re-scored with `src/evaluate.py`, ROC-AUC 0.990; the training run recorded 95.14%)** |
 | Weighted ensemble | 94.50% |
 | Naive Bayes | 86.09% |
 
@@ -160,7 +160,7 @@ Copy `.env.example` to `.env` and edit if needed; nothing here is secret. Load i
 | Page | What it does |
 |------|--------------|
 | **Home** (`/`) | What the tool does, 3-step "How it works", honest limitations. |
-| **Analyze** (`/analyze`) | Paste an article or load a sample (fake, real, satire, known limitation). Live word counter, API status badge, animated confidence gauge, "why this verdict" signals, your text with influential words highlighted, copy result, export JSON, session history, and a thumbs up/down feedback widget. |
+| **Analyze** (`/analyze`) | Paste an article, paste a link (the server fetches the article text), or load a sample (fake, real, satire, known limitation). Live word counter, API status badge, animated confidence gauge, "why this verdict" signals, your text with influential words highlighted, copy result, export JSON, session history, and a thumbs up/down feedback widget. |
 | **Model** (`/model`) | Accuracy comparison, metrics table, confusion-matrix heatmap, V1→V2 story, configuration. |
 | **Architecture** (`/architecture`) | Three diagrams: system design, request sequence, ML pipeline. |
 | **About, Terms & Privacy, FAQ** | Project and dataset credits; data handling; common questions. Unknown addresses show a 404 page. |
@@ -244,4 +244,4 @@ Built with scikit-learn, FastAPI, React and Vite.
 
 ## License
 
-Educational project for PBL-1 coursework at Manipal University Jaipur.
+Educational project for PBL-V coursework at Manipal University Jaipur.

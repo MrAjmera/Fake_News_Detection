@@ -169,3 +169,14 @@ The ML model and the `/api/predict` response format are still untouched. Same br
 | `frontend/src/pages/Analyze.jsx`, `api/client.js`, `index.css` | Link box + "Fetch article"; text goes into the box for review; friendly errors; scheme added automatically. | |
 | `frontend/src/lib/auth.jsx`, `App.jsx` | Stores the signed-in id (never the password) and shows "Signed in as <id>" next to Sign out. | |
 | `Terms.jsx`, `Faq.jsx`, `README.md`, `DEMO.md`, `.env.example` | Privacy and usage wording for link input. | |
+
+---
+
+## Follow-up: pages and labels brought up to date (Nov 2026)
+
+| File | Change | Why |
+|------|--------|-----|
+| `frontend/src/components/diagrams/HLDDiagram.jsx`, `SequenceDiagram.jsx`, `LinkSequenceDiagram.jsx` (new), `SequencePrimitives.jsx` (new), `pages/Architecture.jsx` | High-level design now shows link input and feedback paths; the predict sequence shows the security checks; a new sequence diagram for `POST /api/extract-url`. Sequence helpers moved into a shared factory. | The diagrams still showed only the first version of the system. |
+| `frontend/src/pages/About.jsx`, `Landing.jsx` | PBL-V, supervisor, registration number; "What the app does" and "What's inside"; stack lists link input, evaluation and tests; V1 to V2 points use 53,955 duplicates and 95.28%. | Content was out of date. |
+| `frontend/src/pages/Model.jsx`, `backend/main.py` | Served model shows 95.28% (re-scored with `evaluate.py`; the training run recorded 95.14%), duplicates note says 53,955 of 132,386 rows. Intro explains which numbers are re-scored and which are recorded. | The page showed 95.14% in the cards and 95.3% in the table. |
+| `frontend/src/App.jsx`, `Terms.jsx`, `README.md`, `DEMO.md` | "PBL-1 (CSE2170)" replaced by "PBL-V"; "~60,000" replaced by 53,955. | Consistency with the report and the real numbers. |

@@ -72,7 +72,9 @@ MODEL_INFO = {
     "model_type": "TF-IDF + Logistic Regression (V2)",
     "accuracy": {
         "naive_bayes": 86.09,
-        "logistic_regression": 95.14,
+        # Re-scored on the saved model with src/evaluate.py (15,687 test articles);
+        # the other three are from the recorded V2 training run (LR was 95.14% there).
+        "logistic_regression": 95.28,
         "random_forest": 95.61,
         "weighted_ensemble": 94.50,
     },
@@ -80,8 +82,9 @@ MODEL_INFO = {
     "ngram_range": [1, 2],
     "training_corpora": ["ISOT", "WELFake", "fake_3", "CoAID"],
     "deduplication_note": (
-        "~60,000 duplicated entries were dropped during ingestion to prevent "
-        "data leakage between overlapping datasets (e.g. WELFake vs. ISOT)."
+        "53,955 duplicated entries (about 41% of 132,386 raw rows) were dropped "
+        "during ingestion to prevent data leakage between overlapping datasets "
+        "(e.g. WELFake vs. ISOT), leaving 78,431 unique articles."
     ),
 }
 

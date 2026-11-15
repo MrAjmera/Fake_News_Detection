@@ -19,7 +19,7 @@ const FIXES = [
   ],
   [
     'Duplicate leakage',
-    'WELFake already contains ISOT variants, so identical articles sat on both sides of the train/test split. Strict deduplication on exact text removed ~60,000 entries.',
+    'WELFake already contains ISOT variants, so identical articles sat on both sides of the train/test split. Strict deduplication on exact text removed 53,955 of 132,386 rows (about 41%).',
   ],
 ]
 
@@ -46,8 +46,10 @@ export default function Model() {
         <h1>Model</h1>
         <p>
           V2 pipeline — TF-IDF over 15,000 features with bigrams, feeding a
-          Logistic Regression classifier. These figures come from the recorded
-          V2 training run; nothing is recomputed at request time.
+          Logistic Regression classifier. Logistic Regression (served here) was
+          re-scored on the saved model with src/evaluate.py; the other three
+          come from the recorded V2 training run, which gave Logistic
+          Regression 95.14%. Nothing is recomputed at request time.
         </p>
       </div>
 

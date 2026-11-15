@@ -1,10 +1,21 @@
 import { Link } from 'react-router-dom'
 
 const STACK = [
-  ['Interface', 'React 19, React Router, Vite'],
-  ['API', 'FastAPI, Pydantic, Uvicorn'],
+  ['Interface', 'React 19, React Router, Vite; demo sign-in gate (checked in the browser)'],
+  ['API', 'FastAPI, Pydantic, Uvicorn; slowapi rate limiting, CORS allow-list, security headers'],
   ['Model', 'scikit-learn: TF-IDF (15,000 features, 1–2-grams) + Logistic Regression'],
   ['Serving', 'Model and vectorizer loaded once at startup with joblib'],
+  ['Link input', 'httpx download with SSRF protection, trafilatura article extraction'],
+  ['Evaluation', 'src/evaluate.py re-scores the saved model on the reproduced 80/20 test split'],
+  ['Quality', '35 automated backend tests (pytest); npm audit: 0 vulnerabilities'],
+]
+
+const FEATURES = [
+  ['Explained verdicts', 'Every result lists the words in your own text that pushed it towards REAL or FAKE, and highlights them in the text.'],
+  ['Paste text or a link', 'Paste an article, or a link to a public news page and the server fetches only the article text. Private and internal addresses are refused.'],
+  ['Honest evaluation', 'The Model page shows the real confusion matrix, precision, recall and where the model is weak.'],
+  ['Feedback', 'A thumbs up or down and an optional comment are saved to a text file for the project team. The article text is never included.'],
+  ['Demo sign-in', 'One shared id and password limits who opens the demo. It is a simple browser-side gate, not a secure account system.'],
 ]
 
 // Sources and names exactly as listed in data/README.md and src/train_v2.py.
@@ -40,11 +51,11 @@ const STORY = [
   ],
   [
     'Duplicate leakage was removed.',
-    'About 60,000 identical articles appeared in more than one dataset, so some test articles had also been seen in training. Exact-text deduplication fixed that.',
+    'Of 132,386 raw rows, 53,955 (about 41%) were exact duplicates across the datasets, so some test articles had also been seen in training. Exact-text deduplication fixed that and left 78,431 unique articles.',
   ],
   [
-    'V2 reached 95.14% (served) and 95.61% (best).',
-    'The served model is Logistic Regression on TF-IDF features. It is slightly below the Random Forest, but it lets the app show which words in your text drove the result.',
+    'V2 reaches 95.28% accuracy (served model).',
+    'Measured on 15,687 held-out test articles (ROC-AUC 0.990). The training run recorded 95.14% for the same model and 95.61% for Random Forest. Logistic Regression is served because it lets the app show which words in your text drove the result.',
   ],
 ]
 
@@ -66,7 +77,7 @@ export default function About() {
           <dl className="meta-list">
             <div className="meta-item">
               <dt>Project</dt>
-              <dd>Fake News Detection, PBL-1 (CSE2170)</dd>
+              <dd>Fake News Detection, PBL-V</dd>
             </div>
             <div className="meta-item">
               <dt>Institution</dt>
@@ -80,7 +91,25 @@ export default function About() {
               <dt>Registration no.</dt>
               <dd>2427030493</dd>
             </div>
+            <div className="meta-item">
+              <dt>Under the guidance of</dt>
+              <dd>Amit Kumar Gupta</dd>
+            </div>
           </dl>
+        </div>
+      </section>
+
+      <section className="section">
+        <h2>What the app does</h2>
+        <div className="card">
+          <ul className="credits">
+            {FEATURES.map(([title, body]) => (
+              <li key={title}>
+                <b>{title}</b>
+                <p>{body}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

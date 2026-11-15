@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import { AuthProvider } from './lib/auth'
 import { ConsentProvider } from './lib/consent'
 import { ToastProvider } from './lib/toast'
 import { initTheme } from './lib/theme'
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ConsentProvider>
         <ToastProvider>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </ToastProvider>
       </ConsentProvider>
     </BrowserRouter>

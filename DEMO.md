@@ -62,3 +62,13 @@ The Reserve Bank of India announced today that interest rates will remain unchan
 | "Too many requests" message | The demo rate limit is 30 requests a minute. Wait a minute. |
 | Backend fails at startup | `models_v2/model_lr_v2.pkl` or `vectorizer_v2.pkl` is missing. Run `python train_v2.py` from `src/`. |
 | Notice does not appear again | Click **Clear my data** in the footer. |
+
+---
+
+## Sign-in and feedback (added Nov 2026)
+
+- **Sign-in:** the app now opens on a sign-in page. The demo id and password are the defaults in `frontend/src/lib/authConfig.js` (or whatever you set in `frontend/.env.local`). It is a shared demo gate checked in the browser, not a secure account system. "Sign out" is in the top bar.
+- **Feedback file:** every thumbs up/down and comment is appended to `feedback.txt` in the project root, one line each, for example:
+  `2026-11-15 18:15:32 UTC | THUMBS UP | model said: FAKE 99.63% (HIGH) | comment: ...`
+  Open it after the demo to show real responses. It never contains the article text.
+- If the server is unreachable, feedback is kept in the browser instead and the page says so.

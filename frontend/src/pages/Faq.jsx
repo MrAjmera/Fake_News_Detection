@@ -27,7 +27,7 @@ const ITEMS = [
   ],
   [
     'Is my text stored?',
-    'It is sent to the server to be scored and is not saved or logged. Your history stays in your open tab only. See the Terms & Privacy page for details.',
+    'It is sent to the server to be scored and is not saved or logged. Your history stays in your open tab only. If you leave feedback, only your rating, comment and the model’s verdict are saved, never the article. See the Terms & Privacy page for details.',
   ],
   [
     'Why did I get a "too many requests" message?',

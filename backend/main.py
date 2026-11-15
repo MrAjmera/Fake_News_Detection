@@ -1,5 +1,8 @@
 import os
+import re
+import threading
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -12,7 +15,14 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 import inference
-from schemas import HealthResponse, ModelInfoResponse, PredictRequest, PredictResponse
+from schemas import (
+    FeedbackRequest,
+    FeedbackResponse,
+    HealthResponse,
+    ModelInfoResponse,
+    PredictRequest,
+    PredictResponse,
+)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 VIZ_DIR = REPO_ROOT / "visualizations"
@@ -26,6 +36,12 @@ FRONTEND_ORIGINS = [
     if o.strip()
 ]
 PREDICT_RATE_LIMIT = os.environ.get("PREDICT_RATE_LIMIT", "30/minute")
+FEEDBACK_RATE_LIMIT = os.environ.get("FEEDBACK_RATE_LIMIT", "20/minute")
+# Thumbs up/down and comments are appended here, one line each. The file holds
+# user comments, so it is git-ignored. Article text is never written to it.
+FEEDBACK_FILE = Path(os.environ.get("FEEDBACK_FILE", REPO_ROOT / "feedback.txt"))
+_feedback_lock = threading.Lock()
+_CONTROL_CHARS = re.compile(r"[\x00-\x1f\x7f]+")
 # Requests larger than this are refused before the body is read into memory.
 MAX_BODY_BYTES = 64 * 1024
 
@@ -83,15 +99,17 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 async def validation_error_handler(request: Request, exc: RequestValidationError):
     # FastAPI's default 422 body echoes the submitted input back. Return a fixed
     # message instead so user text never appears in responses or error logs.
-    return JSONResponse(
-        status_code=422,
-        content={
-            "detail": (
-                "Invalid request. Send JSON like {\"text\": \"...\"} with at most "
-                "12,000 characters."
-            )
-        },
-    )
+    if request.url.path == "/api/feedback":
+        detail = (
+            "Invalid feedback. Send a rating of \"up\" or \"down\" and a comment "
+            "of at most 500 characters."
+        )
+    else:
+        detail = (
+            "Invalid request. Send JSON like {\"text\": \"...\"} with at most "
+            "12,000 characters."
+        )
+    return JSONResponse(status_code=422, content={"detail": detail})
 
 
 # No credentials/cookies are used, so credentialed CORS is not enabled.
@@ -144,6 +162,30 @@ def predict(request: Request, body: PredictRequest):
         return inference.predict(body.text)
     except inference.ValidationError as e:
         raise HTTPException(status_code=422, detail=str(e))
+
+
+@app.post("/api/feedback", response_model=FeedbackResponse)
+@limiter.limit(FEEDBACK_RATE_LIMIT)
+def feedback(request: Request, body: FeedbackRequest):
+    """Append one line to feedback.txt: time, rating, the model's verdict, comment."""
+    when = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+    rating = "THUMBS UP" if body.rating == "up" else "THUMBS DOWN"
+    verdict = body.verdict or "-"
+    if body.confidence is not None:
+        verdict += f" {body.confidence:.2f}%"
+    if body.confidence_band:
+        verdict += f" ({body.confidence_band})"
+    # One entry = one line, so a comment can never fake extra entries.
+    comment = _CONTROL_CHARS.sub(" ", body.comment).strip() or "-"
+    line = f"{when} | {rating} | model said: {verdict} | comment: {comment}\n"
+    try:
+        with _feedback_lock:
+            FEEDBACK_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with FEEDBACK_FILE.open("a", encoding="utf-8") as f:
+                f.write(line)
+    except OSError:
+        raise HTTPException(status_code=500, detail="Could not save feedback.")
+    return {"saved": True}
 
 
 # --- serve the built frontend (only when `npm run build` has been run) -------

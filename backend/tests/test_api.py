@@ -62,3 +62,49 @@ def test_cors_only_allows_configured_origin(client):
     bad = client.get("/api/health", headers={"Origin": "http://evil.example"})
     assert ok.headers.get("access-control-allow-origin") == "http://localhost:5173"
     assert "access-control-allow-origin" not in bad.headers
+
+
+# --- feedback: thumbs up/down + comment appended to feedback.txt ------------
+
+
+def test_feedback_is_appended_as_one_line(client, feedback_file):
+    r = client.post(
+        "/api/feedback",
+        json={
+            "rating": "up",
+            "comment": "line one\nline two | THUMBS DOWN fake entry",
+            "verdict": "FAKE",
+            "confidence_band": "HIGH",
+            "confidence": 99.63,
+        },
+    )
+    assert r.status_code == 200
+    assert r.json() == {"saved": True}
+
+    client.post("/api/feedback", json={"rating": "down"})
+
+    lines = feedback_file.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 2  # a newline in a comment cannot create a third entry
+    assert "THUMBS UP" in lines[0]
+    assert "model said: FAKE 99.63% (HIGH)" in lines[0]
+    assert "line one line two" in lines[0]
+    assert "THUMBS DOWN" in lines[1]
+    assert lines[1].endswith("comment: -")
+
+
+def test_feedback_rejects_bad_rating_and_long_comment(client, feedback_file):
+    assert client.post("/api/feedback", json={"rating": "meh"}).status_code == 422
+    too_long = {"rating": "up", "comment": "x" * 501}
+    r = client.post("/api/feedback", json=too_long)
+    assert r.status_code == 422
+    assert "xxxxx" not in r.text  # the error does not echo the input
+    assert not feedback_file.exists()
+
+
+def test_feedback_never_stores_article_text(client, feedback_file):
+    r = client.post(
+        "/api/feedback",
+        json={"rating": "up", "text": "SECRET-ARTICLE-TEXT " * 30},
+    )
+    assert r.status_code == 200
+    assert "SECRET-ARTICLE-TEXT" not in feedback_file.read_text(encoding="utf-8")

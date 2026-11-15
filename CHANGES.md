@@ -142,3 +142,16 @@ The ML model and the `/api/predict` response format are still untouched. Same br
 - **The "Feature importance" chart on the Model page is from V1.** `src/visualize.py` reads the V1 Random Forest in `models/`, so `visualizations/feature_importance.png` shows V1's top words, while the page describes V2. Either regenerate it from the V2 model or change its caption.
 - **Replace `frontend/src/data/metrics.json` before the demo.** The "Sample data" banner stays until `is_sample` is `false`.
 - Nothing has been merged to `main`.
+
+---
+
+## Follow-up: feedback file and demo sign-in (Nov 2026)
+
+| File | Change | Why |
+|------|--------|-----|
+| `backend/main.py`, `backend/schemas.py` | New `POST /api/feedback`: validates rating (`up`/`down`), comment (max 500 chars), verdict, band, confidence; appends one line to `feedback.txt` under a lock. Controls characters are flattened so a comment cannot forge extra entries. Own rate limit. 422 message for this route no longer mentions article text. | The user wants all thumbs and comments saved in a text file to show and to collect friends' feedback after deployment. |
+| `backend/tests/*` | 3 new tests (one-line entries, validation without echo, article text never stored); autouse fixture redirects the file to a temp path. Total 9 tests passing. | Tests must never write the real file. |
+| `.gitignore`, `.env.example` | Ignore `feedback.txt`; document `FEEDBACK_RATE_LIMIT`, `FEEDBACK_FILE`. | Comments are user data. |
+| `frontend/src/api/client.js`, `lib/feedbackStore.js`, `components/FeedbackWidget.jsx` | Feedback is sent to the server and also kept in the browser; the UI says which happened. | Works offline and keeps JSON export. |
+| `frontend/src/lib/authConfig.js`, `lib/auth.jsx`, `pages/Login.jsx`, `App.jsx`, `main.jsx`, `index.css`, `frontend/.env.example` | One shared demo id/password checked in the browser; app pages hidden until sign-in (Terms stays public); Sign out button; "Clear my data" also signs out. | Simple gate for sharing with friends. Explicitly not real security. |
+| `Terms.jsx`, `ConsentModal.jsx`, `Faq.jsx`, `README.md`, `DEMO.md` | Privacy wording updated: feedback now reaches the server; one shared demo sign-in exists. | The old text said nothing was sent to the server and there were no accounts. |

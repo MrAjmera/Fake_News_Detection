@@ -2153,3 +2153,69 @@ tbody tr:last-child th[scope="row"] {
   color: var(--text-dim);
   font-size: 0.875rem;
 }
+
+/* ---------- demo sign-in ---------- */
+.login {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--space-lg);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 26rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.login-card h1 {
+  margin: 0;
+  font-size: var(--fs-xl);
+}
+
+.login-lead {
+  margin: 0 0 var(--space-xs);
+  color: var(--text-dim);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.field label {
+  font-size: var(--fs-sm);
+  color: var(--text-dim);
+}
+
+.field input {
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: var(--fs-base);
+}
+
+.login-error {
+  margin: 0;
+  color: var(--error-text);
+  font-size: var(--fs-sm);
+}
+
+.login-note {
+  margin: var(--space-xs) 0 0;
+  color: var(--text-faint);
+  font-size: var(--fs-xs);
+}
+
+.signout-btn {
+  white-space: nowrap;
+}
+
+.topbar-spacer {
+  flex: 1;
+}

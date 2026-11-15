@@ -35,14 +35,17 @@ export default function ConsentModal() {
           fact-checker, and it can be wrong.
         </p>
         <p>
-          <b>What is stored on this device.</b> Only your answer to this
-          notice, your light/dark choice, and any feedback you choose to leave.
-          Your analysis history is kept in memory for this tab and disappears
-          when you close it.
+          <b>What is stored on this device.</b> Your answer to this notice, your
+          light/dark choice, your demo sign-in, and a copy of any feedback you
+          choose to leave. Your analysis history is kept in memory for this tab
+          and disappears when you close it.
         </p>
         <p>
           <b>What is sent to the server.</b> The text you analyze is sent to
-          the backend to be scored. It is not saved or logged by the app.
+          the backend to be scored. It is not saved or logged by the app. If you
+          leave feedback, your rating, optional comment and the model&apos;s
+          verdict are added to a text file kept by the project team, never your
+          article.
         </p>
         <p>
           You can remove everything stored on this device at any time with

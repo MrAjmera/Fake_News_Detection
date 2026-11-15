@@ -3,7 +3,9 @@ import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import ConsentModal from './components/ConsentModal'
 import ThemeToggle from './components/ThemeToggle'
 import { useConsent } from './lib/consent'
+import { useAuth } from './lib/auth'
 import ErrorBoundary from './components/ErrorBoundary'
+import Login from './pages/Login'
 import Analyze from './pages/Analyze'
 import Architecture from './pages/Architecture'
 import About from './pages/About'
@@ -33,6 +35,9 @@ export default function App() {
   useRouteFocus(mainRef)
   const { pathname } = useLocation()
   const { clearData } = useConsent()
+  const { signedIn, signOut } = useAuth()
+  // The Terms & Privacy page stays readable before signing in.
+  const showApp = signedIn || pathname === '/terms'
 
   return (
     <div className="shell">
@@ -44,30 +49,42 @@ export default function App() {
         <Link to="/" className="brand">
           Fake News Detection<span>V2 · LR</span>
         </Link>
-        <nav className="nav" aria-label="Main">
-          <NavLink to="/" end>
-            Home
-          </NavLink>
-          <NavLink to="/analyze">Analyze</NavLink>
-          <NavLink to="/model">Model</NavLink>
-          <NavLink to="/architecture">Architecture</NavLink>
-          <NavLink to="/about">About</NavLink>
-        </nav>
+        {!signedIn && <span className="topbar-spacer" />}
+        {signedIn && (
+          <nav className="nav" aria-label="Main">
+            <NavLink to="/" end>
+              Home
+            </NavLink>
+            <NavLink to="/analyze">Analyze</NavLink>
+            <NavLink to="/model">Model</NavLink>
+            <NavLink to="/architecture">Architecture</NavLink>
+            <NavLink to="/about">About</NavLink>
+          </nav>
+        )}
+        {signedIn && (
+          <button type="button" className="link-btn signout-btn" onClick={signOut}>
+            Sign out
+          </button>
+        )}
         <ThemeToggle />
       </header>
 
       <main id="main" className="page" tabIndex={-1} ref={mainRef}>
         <ErrorBoundary key={pathname}>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/analyze" element={<Analyze />} />
-            <Route path="/model" element={<Model />} />
-            <Route path="/architecture" element={<Architecture />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/faq" element={<Faq />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          {showApp ? (
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/analyze" element={<Analyze />} />
+              <Route path="/model" element={<Model />} />
+              <Route path="/architecture" element={<Architecture />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/faq" element={<Faq />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          ) : (
+            <Login />
+          )}
         </ErrorBoundary>
       </main>
 
@@ -78,8 +95,8 @@ export default function App() {
         </p>
         <nav aria-label="Footer">
           <Link to="/terms">Terms &amp; Privacy</Link>
-          <Link to="/about">About</Link>
-          <Link to="/faq">FAQ</Link>
+          {signedIn && <Link to="/about">About</Link>}
+          {signedIn && <Link to="/faq">FAQ</Link>}
           <button type="button" className="link-btn footer-btn" onClick={clearData}>
             Clear my data
           </button>

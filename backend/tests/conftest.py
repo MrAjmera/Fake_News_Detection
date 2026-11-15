@@ -20,3 +20,11 @@ def client():
 def reset_rate_limit():
     main.limiter.reset()
     yield
+
+
+@pytest.fixture(autouse=True)
+def feedback_file(tmp_path, monkeypatch):
+    # Tests must never write to the real feedback.txt.
+    path = tmp_path / "feedback.txt"
+    monkeypatch.setattr(main, "FEEDBACK_FILE", path)
+    return path

@@ -43,18 +43,25 @@ export default function Terms() {
             to produce a score. The app does not save it or write it to logs.
           </li>
           <li>
-            <b>Stored in your browser</b> (local storage on this device only):
-            your answer to the first-visit notice, your light/dark choice, and
-            any feedback you choose to leave. Nothing in this list is sent to
-            the server.
+            <b>Stored in your browser</b> (local storage on this device):
+            your answer to the first-visit notice, your light/dark choice, your
+            demo sign-in, and a copy of any feedback you choose to leave.
+          </li>
+          <li>
+            <b>Feedback you submit</b> (thumbs up or down, your optional
+            comment, and the model&apos;s verdict and confidence) is sent to the
+            server and added to a text file kept by the project team. Your
+            article text is never included. Please do not put personal
+            information in a comment.
           </li>
           <li>
             <b>Kept in memory only:</b> your analysis history for the current
             tab. It is gone when you close the tab.
           </li>
           <li>
-            There are no accounts, no tracking, no advertising and no
-            personal-data collection.
+            There is no account system: one shared demo sign-in only limits who
+            can open the demo. There is no tracking, no advertising and no
+            collection of personal data.
           </li>
           <li>
             Use <b>Clear my data</b> in the footer to delete everything stored

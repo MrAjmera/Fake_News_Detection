@@ -8,6 +8,7 @@ export default function FeedbackWidget({ result }) {
   const [rating, setRating] = useState(null)
   const [comment, setComment] = useState('')
   const [sent, setSent] = useState(false)
+  const [synced, setSynced] = useState(true)
   const [busy, setBusy] = useState(false)
 
   async function submit(e) {
@@ -15,7 +16,7 @@ export default function FeedbackWidget({ result }) {
     if (!rating || busy) return
     setBusy(true)
     try {
-      await feedbackStore.save({
+      const { synced } = await feedbackStore.save({
         rating,
         comment,
         verdict: result.verdict,
@@ -23,7 +24,13 @@ export default function FeedbackWidget({ result }) {
         confidence: result.confidence,
       })
       setSent(true)
-      toast('Thanks, your feedback was saved on this device', 'success')
+      setSynced(synced)
+      toast(
+        synced
+          ? 'Thanks, your feedback was saved'
+          : 'Saved on this device only; the server could not be reached',
+        synced ? 'success' : 'info'
+      )
     } catch (err) {
       toast(err.message, 'error')
     } finally {
@@ -47,7 +54,9 @@ export default function FeedbackWidget({ result }) {
 
       {sent ? (
         <p className="feedback-thanks" role="status">
-          Thank you. Your feedback was saved on this device only.
+          {synced
+            ? 'Thank you. Your feedback was saved.'
+            : 'Thank you. The server could not be reached, so your feedback was saved on this device only.'}
         </p>
       ) : (
         <form onSubmit={submit}>
@@ -95,7 +104,8 @@ export default function FeedbackWidget({ result }) {
       )}
 
       <p className="feedback-note">
-        Feedback stays in your browser. Your article text is not included.{' '}
+        Your rating and comment are saved to the project&apos;s feedback file and
+        to this browser. Your article text is never included.{' '}
         <button type="button" className="link-btn footer-btn" onClick={exportAll}>
           Export feedback (JSON)
         </button>

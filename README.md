@@ -27,7 +27,7 @@ A web app that estimates whether a news article's writing resembles the fake or 
 | Weighted ensemble | 94.50% |
 | Naive Bayes | 86.09% |
 
-Logistic Regression is the model served because it lets the app show *which words in your text pushed the decision*. V1 reached only 69.21%; the jump to V2 came from fixing three pipeline problems: clickbait contamination, unscaled features, and duplicate leakage between datasets. See [V1_to_V2_Engineering_Report.md](V1_to_V2_Engineering_Report.md).
+Logistic Regression is the model served because it lets the app show *which words in your text pushed the decision*. V1 reached only 69.21%; the jump to V2 came from fixing three pipeline problems: clickbait contamination, unscaled features, and duplicate leakage between datasets. See [V1_to_V2_Engineering_Report.md](docs/archive/2026-04_V2_reports/V1_to_V2_Engineering_Report.md).
 
 > The metrics table and confusion matrix on the **Model** page are driven by `frontend/src/data/metrics.json` and show a visible "Sample data" banner until you replace the numbers with real evaluation results and set `"is_sample": false`.
 
@@ -100,6 +100,7 @@ Base URL: `http://127.0.0.1:8000`
 | `GET /api/health` | `{"status": "ok", "model_loaded": true}` |
 | `GET /api/model-info` | Model type, accuracies, feature count, corpora, deduplication note |
 | `POST /api/predict` | Score one article |
+| `POST /api/feedback` | Append a thumbs up/down + comment to `feedback.txt` (never the article text) |
 
 **Request**
 ```json
@@ -136,7 +137,9 @@ Base URL: `http://127.0.0.1:8000`
 
 - Rate limit on `/api/predict` (slowapi), request size caps, CORS limited to the configured frontend origin (GET/POST only, no cookies).
 - Response headers: `Content-Security-Policy` (same-origin scripts and styles only), `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`.
-- The app never logs or stores article text. No accounts, no tracking, no personal-data collection.
+- The app never logs or stores article text. No tracking and no personal-data collection.
+- **Feedback file:** each thumbs up/down + optional comment (500 characters max) + the model's verdict is appended as one line to `feedback.txt` in the project root (git-ignored; set `FEEDBACK_FILE` to move it). Comments are flattened to one line so they cannot forge entries. `POST /api/feedback` is rate-limited (`FEEDBACK_RATE_LIMIT`, default 20/minute).
+- **Demo sign-in:** one shared id and password checked in the browser (`frontend/src/lib/authConfig.js`; change with `VITE_DEMO_USER` / `VITE_DEMO_PASS` in `frontend/.env.local`, then `npm run build`). It only limits who opens the demo. It is **not real security**, because the values are readable in the built JavaScript. Use real accounts before storing anything sensitive.
 - The UI renders text as plain React text nodes and never uses `dangerouslySetInnerHTML`.
 
 ### Configuration

@@ -52,6 +52,15 @@ export function predict(text) {
   })
 }
 
+// Sends thumbs up/down + comment + the model's verdict. Never the article text.
+export function sendFeedback({ rating, comment, verdict, confidence_band, confidence }) {
+  return request('/api/feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rating, comment, verdict, confidence_band, confidence }),
+  })
+}
+
 export function getModelInfo() {
   return request('/api/model-info')
 }

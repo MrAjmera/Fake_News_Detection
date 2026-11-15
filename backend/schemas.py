@@ -31,6 +31,23 @@ class PredictResponse(BaseModel):
     latency_ms: float
 
 
+MAX_COMMENT_CHARS = 500
+
+
+class FeedbackRequest(BaseModel):
+    """Thumbs up/down on one result. The article text is deliberately not a field."""
+
+    rating: Literal["up", "down"]
+    comment: str = Field(default="", max_length=MAX_COMMENT_CHARS)
+    verdict: Literal["FAKE", "REAL"] | None = None
+    confidence_band: Literal["HIGH", "LOW", "UNCERTAIN"] | None = None
+    confidence: float | None = Field(default=None, ge=0, le=100)
+
+
+class FeedbackResponse(BaseModel):
+    saved: bool
+
+
 class HealthResponse(BaseModel):
     status: str
     model_loaded: bool

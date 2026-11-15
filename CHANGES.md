@@ -115,3 +115,30 @@ The ML model and the `/api/predict` response format are still untouched. Same br
 ## Things you need to act on
 - **Roll number:** your message again contained the literal text `<your roll number>`. Send the real number and I will add it to the About page.
 - Production use: set `FRONTEND_ORIGIN` to the real site address, and install dev tools with `pip install -r backend/requirements-dev.txt`.
+
+---
+
+# Changes: Follow-up (dependency fixes and documentation)
+
+## Files, and why each was touched
+- `frontend/package-lock.json`: ran `npm audit fix` (no `--force`). Vite moved from 8.3.0 to 8.3.8 and the bundler pieces it depends on moved to newer releases of the same major version. `package.json` is unchanged. This resolves the 2 high-severity findings reported in Phase 2; `npm audit` now reports 0 vulnerabilities.
+- `backend/requirements.txt`: `scikit-learn` is now pinned to `==1.7.0`, the version the saved model was created with. This removes the version warning shown when the model loaded.
+- `README.md`: rewritten. The old text described the V1 Random Forest command-line tool; it now describes V2, the API (endpoints, request/response, limits and errors), the UI, security, configuration, tests, training, project structure and limitations, and how to start everything. After a one-time `npm run build`, one command (`uvicorn main:app`) serves the API and the UI together on port 8000.
+- `DEMO.md` (new): a step-by-step demo script, three sample inputs with their expected results, and a short fix-it table.
+- `CHANGES.md`: this section.
+
+## What I verified by running it
+- `npm audit`: 0 vulnerabilities. `npm run build` and `npm run lint`: pass. `pytest`: 6 passed.
+- scikit-learn 1.7.0 installed in the backend environment; the model loads and predicts with Python warnings treated as errors, so no version warning is raised. Backend startup output contained no warnings. Predictions are unchanged (for example the fake sample is still FAKE at 99.63%).
+- I ran the demo path in a real browser against the backend serving the built app: first-visit notice, Home button to Analyze, "Server online" badge, and the Fake, Real, Known-limitation and Satire samples. All four results matched the figures written in `DEMO.md` exactly. A 10-word input keeps the Analyze button disabled. The Model page shows the "Sample data" banner.
+- I stopped only the backend process I started, by its process number, and removed my log files.
+
+## What I did not verify
+- The README's macOS/Linux commands (only Windows was run), and the training steps (`train_v2.py` needs the datasets, which are not in the repository).
+- The 2 remaining pytest warnings are about Starlette's test client and a Python library alias; they are unrelated to this project's code.
+
+## Things to know
+- **Roll number is still not on the About page.** The text sent was again a placeholder (`2XXXXXXXXXX [replace with your real number]`). Send the actual number.
+- **The "Feature importance" chart on the Model page is from V1.** `src/visualize.py` reads the V1 Random Forest in `models/`, so `visualizations/feature_importance.png` shows V1's top words, while the page describes V2. Either regenerate it from the V2 model or change its caption.
+- **Replace `frontend/src/data/metrics.json` before the demo.** The "Sample data" banner stays until `is_sample` is `false`.
+- Nothing has been merged to `main`.

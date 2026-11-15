@@ -76,6 +76,10 @@ export default function About() {
               <dt>Team</dt>
               <dd>Krrish Ajmera</dd>
             </div>
+            <div className="meta-item">
+              <dt>Registration no.</dt>
+              <dd>2427030493</dd>
+            </div>
           </dl>
         </div>
       </section>

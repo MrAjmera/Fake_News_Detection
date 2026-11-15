@@ -154,3 +154,9 @@ visualizations/
 backend/venv/
 frontend/node_modules/
 frontend/dist/
+
+# User feedback (thumbs + comments) written by the app
+feedback.txt
+
+# The Python "lib/" rule above must not hide the frontend helper modules
+!frontend/src/lib/
